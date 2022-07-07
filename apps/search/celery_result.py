@@ -18,7 +18,6 @@ def get_task_state_by_id(task_id: str) -> Dict:
     response = CeleryZenodoResponse()
     response.task_id = task_id
     response.task_status = task.status
-    if task.status == 'SUCCESS':
-        response.task_result = task.result
+    response.task_result = task.result
     return dataclasses.asdict(response)
 
