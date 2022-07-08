@@ -63,5 +63,4 @@ class ZenodoAPI:
         zenodo_response.records = self._parse_zenodo_api_response(resp)
         zenodo_response.pages_number = self._get_total_pages_number(int(resp.json()['hits']['total']))
         zenodo_response.current_page = page
-
         return zenodo_response

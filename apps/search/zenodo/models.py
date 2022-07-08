@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 from typing import List
 
+from dataclasses_json import dataclass_json
+
 
 @dataclass
 class HitCreator:
@@ -19,6 +21,7 @@ class ZenodoHit:
     creators: List[HitCreator] = field(default_factory=lambda: [HitCreator])
 
 
+@dataclass_json
 @dataclass
 class ZenodoResponse:
     records: List[ZenodoHit] = field(default_factory=lambda: [ZenodoHit])
