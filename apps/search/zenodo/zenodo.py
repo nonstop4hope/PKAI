@@ -11,7 +11,7 @@ from apps.search.zenodo.models import ZenodoHit, HitCreator, ZenodoResponse
 class ZenodoAPI:
     def __init__(self):
         self.access_token = settings.ZENODO_ACCESS_TOKEN
-        self.size = 10
+        self.size = 100
 
     @staticmethod
     def _remove_tags(text):
@@ -49,19 +49,15 @@ class ZenodoAPI:
             hits.append(hit)
         return hits
 
-    def _get_total_pages_number(self, total_hits: int) -> int:
-        """ calculate the total number of pages """
-        return math.ceil(total_hits/self.size)
-
     def get_records_by_query(self, search_query: str, page: int) -> ZenodoResponse:
         """ get records on request """
         zenodo_response = ZenodoResponse()
-        resp = requests.get('https://zenodo.org/api/records',
-                            params={'q': search_query,
-                                    'access_token': self.access_token,
-                                    'page': page})
-        zenodo_response.records = self._parse_zenodo_api_response(resp)
-        zenodo_response.pages_number = self._get_total_pages_number(int(resp.json()['hits']['total']))
+        api_response = requests.get('https://zenodo.org/api/records',
+                                    params={'q': search_query,
+                                            'access_token': self.access_token,
+                                            'page': page})
+        zenodo_response.records = self._parse_zenodo_api_response(api_response)
+        zenodo_response.total_records = int(api_response.json()['hits']['total'])
         zenodo_response.current_page = page
 
         return zenodo_response
