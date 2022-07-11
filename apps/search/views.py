@@ -1,12 +1,7 @@
-import dataclasses
-
-import redis
 from django.http import JsonResponse
 
-from PKAI import settings
 from .celery_result import get_task_state_by_id
 from .tasks import get_zenodo_records_async
-from .zenodo.models import ZenodoResponse
 
 
 def get_zenodo_records(request):
@@ -19,17 +14,3 @@ def get_celery_result_by_id(request):
     task_id = request.GET.get('task_id')
     response = get_task_state_by_id(task_id)
     return JsonResponse(response)
-
-
-def get_result(request):
-    search_query = request.GET.get('query')
-    page = request.GET.get('page')
-    redis_instance = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0)
-    records_json = redis_instance.get(search_query)
-    response = ZenodoResponse()
-    if records_json is not None:
-        response = ZenodoResponse.from_json(records_json)
-    page = int(page)
-    if len(response.records) >= 10*page:
-        response.records = response.records[10*(page-1):10*page]
-    return JsonResponse(dataclasses.asdict(response))
