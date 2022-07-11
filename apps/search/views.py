@@ -10,7 +10,7 @@ def get_zenodo_records(request):
     if request.user.is_authenticated:
         return JsonResponse({'task_id': str(get_zenodo_records_async.delay(search_query, page))})
     else:
-        return HttpResponseForbidden()
+        return JsonResponse({"detail": "Authentication credentials were not provided."}, status=403)
 
 
 def get_celery_result_by_id(request):
@@ -19,4 +19,4 @@ def get_celery_result_by_id(request):
     if request.user.is_authenticated:
         return JsonResponse(response)
     else:
-        return HttpResponseForbidden()
+        return JsonResponse({"detail": "Authentication credentials were not provided."}, status=403)
