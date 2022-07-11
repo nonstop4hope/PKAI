@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'apps.search',
-    'apps.news',
+    'apps.site.news',
+    'apps.site.custom_auth',
 ]
 
 MIDDLEWARE = [
@@ -140,6 +141,3 @@ CELERY_TIMEZONE = 'Africa/Nairobi'
 # ZENODO STUFF
 ZENODO_ACCESS_TOKEN = os.getenv('ZENODO_ACCESS_TOKEN')
 
-# REDIS CASH STUFF
-REDIS_HOST = 'localhost'
-REDIS_PORT = 6379
