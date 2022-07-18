@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'apps.search',
     'apps.site.news',
     'apps.site.custom_auth',
+    'apps.site.favorite_records',
 ]
 
 MIDDLEWARE = [
