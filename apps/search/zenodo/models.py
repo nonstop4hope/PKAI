@@ -27,3 +27,4 @@ class ZenodoResponse:
     records: List[ZenodoHit] = field(default_factory=lambda: [ZenodoHit])
     current_page: int = 0
     total_records: int = 0
+set
