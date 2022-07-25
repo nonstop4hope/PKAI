@@ -38,13 +38,14 @@ class CoreAPI:
             hits.append(hit)
         return hits
 
-    def get_records_by_query(self, search_query: str, page: int) -> CoreResponse:
+    def get_records_by_query(self, search_query: str, page: int, records_per_query: int = 10) -> CoreResponse:
         """ get records on request """
         response = CoreResponse()
-        api_response = requests.get('https://api.core.ac.uk/v3/search/works',
-                                    headers={'Authorization': f'Bearer {self.access_token}'},
-                                    json={"q": search_query,
-                                          'offset': page*10})
+        api_response = requests.post('https://api.core.ac.uk/v3/search/works',
+                                     headers={'Authorization': f'Bearer {self.access_token}'},
+                                     json={'q': search_query,
+                                           'offset': (page - 1) * records_per_query,
+                                           'limit': records_per_query})
         response.records = self._parse_response(api_response)
         response.total_records = int(api_response.json()['totalHits'])
         response.current_page = page

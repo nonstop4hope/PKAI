@@ -19,7 +19,7 @@ def get_zenodo_records(request):
 def get_core_records(request):
     # if request.user.is_authenticated:
     search_query = request.GET.get('query')
-    page = request.GET.get('page', 1)
+    page = int(request.GET.get('page', 1))
     core_records = str(get_core_records_async.delay(search_query, page))
     return JsonResponse({'task_id': core_records})
     # else:
