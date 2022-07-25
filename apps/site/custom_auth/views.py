@@ -4,6 +4,20 @@ from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .serializers import MyTokenObtainPairSerializer, RegisterSerializer
+from django.contrib.auth import authenticate, login
+from django.shortcuts import redirect
+from django.http import HttpResponse
+
+
+def test(request):
+    username = request.POST['username']
+    password = request.POST['password']
+    user = authenticate(request, username=username, password=password)
+    if user is not None:
+        login(request, user)
+        return redirect('/')
+    else:
+        return HttpResponse('Unauthorized', status=401)
 
 
 class MyObtainTokenPairView(TokenObtainPairView):
