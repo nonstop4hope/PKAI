@@ -20,7 +20,7 @@ class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
 
 
-def login(request):
+def user_login(request):
 
     user = None
     username = request.POST.get('username')
