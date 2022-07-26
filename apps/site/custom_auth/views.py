@@ -1,11 +1,13 @@
+import json
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import redirect
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView
-from django.views.decorators.csrf import csrf_exempt
 
 from .serializers import MyTokenObtainPairSerializer, RegisterSerializer
 
@@ -25,8 +27,9 @@ class RegisterView(generics.CreateAPIView):
 def user_login(request):
 
     user = None
-    username = request.POST.get('username')
-    password = request.POST.get('password')
+    json_data = json.loads(request.body)
+    username = json_data.get('username')
+    password = json_data.get('password')
 
     if username and password:
         user = authenticate(request, username=username, password=password)
