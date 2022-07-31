@@ -24,10 +24,12 @@ class CoreAPI:
         for core_hit in response.json()['results']:
             hit = CoreHit()
             hit.title = core_hit['title']
-            try:
+
+            if core_hit['abstract'] is not None:
                 hit.description = self._remove_tags(core_hit['abstract']).replace('\n', ' ')
-            except TypeError:
-                hit.description = core_hit['abstract']
+            else:
+                hit.description = ''
+
             hit.publication_date = core_hit['publishedDate']
             display_links = list(filter(lambda x: x['type'] == 'display', core_hit['links']))
             if display_links:
