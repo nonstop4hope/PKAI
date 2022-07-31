@@ -48,3 +48,12 @@ def user_logout(request):
         logout(request)
 
     return HttpResponse(status=200)
+
+
+@csrf_exempt
+def user_is_login(request):
+
+    if request.user.is_authenticated:
+        HttpResponse(status=200)
+
+    return HttpResponse(status=401)
