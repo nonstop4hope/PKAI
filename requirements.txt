@@ -48,3 +48,5 @@ vine==5.0.0
 wcwidth==0.2.5
 wrapt==1.14.1
 yarl==1.7.2
+phonenumbers==8.12.52
+django-phonenumber-field==6.3.0
