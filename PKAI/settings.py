@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'apps.site.custom_auth',
     'apps.site.favorite_records',
     'corsheaders',
+    'apps.site.contact_form',
 ]
 
 MIDDLEWARE = [
@@ -152,3 +153,13 @@ ZENODO_ACCESS_TOKEN = os.getenv('ZENODO_ACCESS_TOKEN')
 # CORE STUFF
 CORE_ACCESS_TOKEN = os.getenv('CORE_ACCESS_TOKEN')
 
+# GMAIL STUFF
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+
+# TARGET MAIL BOX
+TARGET_MAIL_BOX = os.getenv('TARGET_MAIL_BOX')
