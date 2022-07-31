@@ -1,6 +1,5 @@
 from django.core.mail import send_mail
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework import permissions, status
 from rest_framework.views import APIView
 
@@ -10,9 +9,9 @@ from .serializers import ContactSerializer
 
 class FeedBackView(APIView):
     permission_classes = [permissions.AllowAny]
+    authentication_classes = ()
     serializer_class = ContactSerializer
 
-    @csrf_exempt
     def post(self, request, *args, **kwargs):
         serializer_class = ContactSerializer(data=request.data)
         if serializer_class.is_valid():
