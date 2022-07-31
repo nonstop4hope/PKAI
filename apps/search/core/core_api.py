@@ -24,7 +24,10 @@ class CoreAPI:
         for core_hit in response.json()['results']:
             hit = CoreHit()
             hit.title = core_hit['title']
-            hit.description = self._remove_tags(core_hit['abstract']).replace('\n', ' ')
+            try:
+                hit.description = self._remove_tags(core_hit['abstract']).replace('\n', ' ')
+            except TypeError:
+                hit.description = core_hit['abstract']
             hit.publication_date = core_hit['publishedDate']
             display_links = list(filter(lambda x: x['type'] == 'display', core_hit['links']))
             if display_links:
@@ -50,3 +53,4 @@ class CoreAPI:
         response.total_records = int(api_response.json()['totalHits'])
         response.current_page = page
         return response
+
