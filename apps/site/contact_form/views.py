@@ -20,7 +20,7 @@ class FeedBackView(APIView):
             from_email = data.get('email')
             phone = data.get('phone')
             message = data.get('message')
-            send_mail(f'От {username} | {phone}', message, from_email, [TARGET_MAIL_BOX])
+            send_mail(f'От {username} | {from_email} |{phone}', message, from_email, [TARGET_MAIL_BOX])
             return JsonResponse({'status': 'sent'})
         else:
             return JsonResponse(serializer_class.errors, status=status.HTTP_400_BAD_REQUEST)
