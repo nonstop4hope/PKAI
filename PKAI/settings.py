@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-vf)bnlknbh#6&a@b(p%g-!msmg=c&@44qo9lbrf=n#hgozm3g5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['icsti.ml']
+ALLOWED_HOSTS = ['icsti.ml', '127.0.0.1']
 
 
 # Application definition
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'apps.site.news',
     'apps.site.custom_auth',
     'apps.site.favorite_records',
+    'apps.site.contact_form',
 ]
 
 MIDDLEWARE = [
@@ -144,3 +145,13 @@ CELERY_TIMEZONE = 'Africa/Nairobi'
 # ZENODO STUFF
 ZENODO_ACCESS_TOKEN = os.getenv('ZENODO_ACCESS_TOKEN')
 
+# TARGET_MAIL_BOX
+TARGET_MAIL_BOX = os.getenv('TARGET_MAIL_BOX')
+
+# GMAIL STUFF
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
