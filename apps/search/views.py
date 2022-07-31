@@ -27,9 +27,9 @@ def get_core_records(request):
 
 
 def get_celery_result_by_id(request):
-    # if request.user.is_authenticated:
-    task_id = request.GET.get('task_id')
-    response = get_task_state_by_id(task_id)
-    return JsonResponse(response)
-    # else:
-    #     return JsonResponse({"detail": "Authentication credentials were not provided."}, status=HTTPStatus.FORBIDDEN)
+    if request.user.is_authenticated:
+        task_id = request.GET.get('task_id')
+        response = get_task_state_by_id(task_id)
+        return JsonResponse(response)
+    else:
+        return JsonResponse({"detail": "Authentication credentials were not provided."}, status=HTTPStatus.FORBIDDEN)
