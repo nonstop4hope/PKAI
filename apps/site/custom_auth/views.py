@@ -36,7 +36,7 @@ def user_login(request):
 
     if user is not None:
         login(request, user)
-        return redirect('/')
+        return HttpResponse(status=200)
     else:
         return HttpResponse('Unauthorized', status=401)
 
