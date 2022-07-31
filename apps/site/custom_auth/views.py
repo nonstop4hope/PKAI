@@ -47,4 +47,4 @@ def user_logout(request):
     if request.user.is_authenticated:
         logout(request)
 
-    return redirect('/')
+    return HttpResponse(status=200)
