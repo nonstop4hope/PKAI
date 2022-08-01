@@ -6,7 +6,7 @@ from celery import shared_task
 from celery.utils.log import get_task_logger
 
 from apps.search.core.core_api import CoreAPI
-from apps.search.zenodo.zenodo import ZenodoAPI
+from apps.search.zenodo.zenodo_api import ZenodoAPI
 
 logger = get_task_logger(__name__)
 
@@ -23,5 +23,5 @@ def get_zenodo_records_async(search_query: str, page: int) -> Dict:
 def get_core_records_async(search_query: str, page: int) -> Dict:
     core_api = CoreAPI()
     logger.info('Getting Core response by query %s and page %s', search_query, page)
-    records = core_api.get_records_by_query(search_query, page)
-    return dataclasses.asdict(records)
+    task_result = core_api.get_records_by_query(search_query, page)
+    return dataclasses.asdict(task_result)

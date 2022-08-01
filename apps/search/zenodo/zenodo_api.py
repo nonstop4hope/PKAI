@@ -4,7 +4,7 @@ from typing import List
 import requests
 from django.conf import settings
 
-from apps.search.zenodo.models import ZenodoHit, HitCreator, ZenodoResponse
+from apps.search.models import Hit, HitCreator, ApiResult
 
 
 class ZenodoAPI:
@@ -18,11 +18,11 @@ class ZenodoAPI:
         tag_re = re.compile(r'<[^>]+>')
         return tag_re.sub('', text)
 
-    def _parse_zenodo_api_response(self, response: requests.models.Response) -> List[ZenodoHit]:
+    def _parse_zenodo_api_response(self, response: requests.models.Response) -> List[Hit]:
         """ parse zenodo response to dataclass """
-        hits: List[ZenodoHit] = []
+        hits: List[Hit] = []
         for zenodo_hit in response.json()['hits']['hits']:
-            hit = ZenodoHit()
+            hit = Hit()
             hit.title = zenodo_hit['metadata']['title']
             hit.description = self._remove_tags(zenodo_hit['metadata']['description']).replace('\n', ' ')
             hit.publication_date = zenodo_hit['metadata']['publication_date']
@@ -48,9 +48,9 @@ class ZenodoAPI:
             hits.append(hit)
         return hits
 
-    def get_records_by_query(self, search_query: str, page: int) -> ZenodoResponse:
+    def get_records_by_query(self, search_query: str, page: int) -> ApiResult:
         """ get records on request """
-        zenodo_response = ZenodoResponse()
+        zenodo_response = ApiResult()
         api_response = requests.get('https://zenodo.org/api/records',
                                     params={'q': search_query,
                                             'access_token': self.access_token,

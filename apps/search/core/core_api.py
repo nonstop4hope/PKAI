@@ -1,10 +1,11 @@
+import json
 import re
 from typing import List
 
 import requests
 from django.conf import settings
 
-from apps.search.core.models import CoreHit, HitCreator, CoreResponse
+from apps.search.models import Hit, HitCreator, ApiResult
 
 
 class CoreAPI:
@@ -18,11 +19,11 @@ class CoreAPI:
         tag_re = re.compile(r'<[^>]+>')
         return tag_re.sub('', text)
 
-    def _parse_response(self, response: requests.models.Response) -> List[CoreHit]:
+    def _get_records(self, data: requests.models.Response) -> List[Hit]:
         """ parse Core response to dataclass """
-        hits: List[CoreHit] = []
-        for core_hit in response.json()['results']:
-            hit = CoreHit()
+        hits: List[Hit] = []
+        for core_hit in data['results']:
+            hit = Hit()
             hit.title = core_hit['title']
 
             if core_hit['abstract'] is not None:
@@ -43,16 +44,26 @@ class CoreAPI:
             hits.append(hit)
         return hits
 
-    def get_records_by_query(self, search_query: str, page: int, records_per_query: int = 10) -> CoreResponse:
+    def get_records_by_query(self, search_query: str, page: int, records_per_query: int = 10) -> ApiResult:
         """ get records on request """
-        response = CoreResponse()
+        api_result = ApiResult()
+
         api_response = requests.post('https://api.core.ac.uk/v3/search/works',
                                      headers={'Authorization': f'Bearer {self.access_token}'},
                                      json={'q': search_query,
-                                           'offset': (page - 1) * records_per_query,
-                                           'limit': records_per_query})
-        response.records = self._parse_response(api_response)
-        response.total_records = int(api_response.json()['totalHits'])
-        response.current_page = page
-        return response
+                                           # 'offset': (page - 1) * records_per_query,
+                                           'limit': records_per_query,
+                                           'scroll': True})
+
+        json_data = json.loads(api_response.content)
+
+        if api_response.status_code == 200:
+            api_result.records = self._get_records(json_data)
+            api_result.total_records = int(json_data['totalHits'])
+            api_result.current_page = page
+        elif api_response.status_code == 500:
+            json_data = json.loads(api_response.content)
+            api_result.message = json_data['message']
+
+        return api_result
 
