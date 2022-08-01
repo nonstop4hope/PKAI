@@ -56,6 +56,12 @@ class ZenodoAPI:
                                             'access_token': self.access_token,
                                             'page': page})
         zenodo_response.records = self._parse_zenodo_api_response(api_response)
-        zenodo_response.total_records = int(api_response.json()['hits']['total'])
+
+        total_records = int(api_response.json()['hits']['total'])
+
+        if total_records > 10000:
+            total_records = 10000
+
+        zenodo_response.total_records = total_records
         zenodo_response.current_page = page
         return zenodo_response
