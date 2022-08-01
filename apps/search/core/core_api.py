@@ -47,19 +47,25 @@ class CoreAPI:
     def get_records_by_query(self, search_query: str, page: int, records_per_query: int = 10) -> ApiResult:
         """ get records on request """
         api_result = ApiResult()
+        headers = {'Authorization': f'Bearer {self.access_token}'}
 
         api_response = requests.post('https://api.core.ac.uk/v3/search/works',
-                                     headers={'Authorization': f'Bearer {self.access_token}'},
+                                     headers=headers,
                                      json={'q': search_query,
-                                           # 'offset': (page - 1) * records_per_query,
+                                           'offset': (page - 1) * records_per_query,
                                            'limit': records_per_query,
-                                           'scroll': True})
+                                           })
 
         json_data = json.loads(api_response.content)
 
         if api_response.status_code == 200:
             api_result.records = self._get_records(json_data)
-            api_result.total_records = int(json_data['totalHits'])
+            total_records = int(json_data['totalHits'])
+
+            if total_records > 10000:
+                total_records = 10000
+
+            api_result.total_records = total_records
             api_result.current_page = page
         elif api_response.status_code == 500:
             json_data = json.loads(api_response.content)

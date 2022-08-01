@@ -23,5 +23,9 @@ def get_zenodo_records_async(search_query: str, page: int) -> Dict:
 def get_core_records_async(search_query: str, page: int) -> Dict:
     core_api = CoreAPI()
     logger.info('Getting Core response by query %s and page %s', search_query, page)
+
+    if page > 1000:
+        page = 1000
+
     task_result = core_api.get_records_by_query(search_query, page)
     return dataclasses.asdict(task_result)
