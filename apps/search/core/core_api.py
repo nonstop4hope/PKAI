@@ -5,7 +5,7 @@ from typing import List
 import requests
 from django.conf import settings
 
-from apps.search.models import Hit, HitCreator, ApiResult
+from apps.search.models import Hit, Author, ApiResult
 
 
 class CoreAPI:
@@ -37,7 +37,7 @@ class CoreAPI:
                 hit.link = display_links[0]['url']
             creators = []
             for hit_creator in core_hit['authors']:
-                creator = HitCreator()
+                creator = Author()
                 creator.name = hit_creator['name']
                 creators.append(creator)
             hit.creators = creators

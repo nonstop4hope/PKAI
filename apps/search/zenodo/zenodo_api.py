@@ -4,7 +4,7 @@ from typing import List
 import requests
 from django.conf import settings
 
-from apps.search.models import Hit, HitCreator, ApiResult
+from apps.search.models import Hit, Author, ApiResult
 
 
 class ZenodoAPI:
@@ -37,7 +37,7 @@ class ZenodoAPI:
             hit.access_right = zenodo_hit['metadata']['access_right']
             creators = []
             for hit_creator in zenodo_hit['metadata']['creators']:
-                creator = HitCreator()
+                creator = Author()
                 try:
                     creator.affiliation = hit_creator['affiliation']
                 except KeyError:
