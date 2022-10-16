@@ -51,4 +51,4 @@ yarl==1.7.2
 phonenumbers==8.12.52
 django-phonenumber-field==6.3.0
 pydantic~=1.10.2
-grequests~=0.6.0
+keybert~=0.6.0

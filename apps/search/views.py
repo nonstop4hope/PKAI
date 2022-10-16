@@ -2,6 +2,7 @@ from http import HTTPStatus
 
 from django.http import JsonResponse
 
+from .api.search_api import SearchAPI
 from .celery_result import get_task_state_by_id
 from .tasks import get_zenodo_records_async
 from .tasks import get_core_records_async
@@ -33,3 +34,11 @@ def get_celery_result_by_id(request):
         return JsonResponse(response)
     else:
         return JsonResponse({"detail": "Authentication credentials were not provided."}, status=HTTPStatus.FORBIDDEN)
+
+
+def test(request):
+    search_query = request.GET.get('query')
+    search = SearchAPI()
+    # response = search.get_zenodo_records_by_query_async(search_query)
+    response = search.get_core_records_by_query_async(search_query)
+    return JsonResponse({'test': 'OK'})
