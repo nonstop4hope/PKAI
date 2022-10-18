@@ -11,8 +11,11 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 import os
 from pathlib import Path
+
+from celery.schedules import crontab
 from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv()
@@ -166,3 +169,5 @@ TARGET_MAIL_BOX = os.getenv('TARGET_MAIL_BOX')
 
 # NEWS URL
 SOURCE_NEWS_URL = os.getenv('SOURCE_NEWS_URL')
+
+

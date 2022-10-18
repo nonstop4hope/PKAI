@@ -9,17 +9,17 @@ logger = get_task_logger(__name__)
 
 
 @shared_task()
-def get(url: str='', timeout: int = 30) -> requests.models.Response:
-    # if headers is None:
-    #     headers = {}
-    resp = requests.get(url='https://catfact.ninja/fact', timeout=timeout)
-    logger.info(resp.status_code)
+def get(url: str, headers: dict = None, timeout: int = 30, params: dict = None) -> requests.models.Response:
+    if headers is None:
+        headers = {}
+    resp = requests.get(url=url, timeout=timeout, headers=headers, params=params)
     return resp.json()
 
 
 @shared_task
-def post(url: str, body: dict, headers=None, timeout: int = 30):
+def post(url: str, body=None, headers=None, timeout: int = 30):
     if headers is None:
         headers = {}
-    logger.info(url)
-    return requests.post(url=url, body=body, headers=headers)
+    resp = requests.post(url=url, json=body, headers=headers, timeout=timeout)
+    logger.info(resp.status_code)
+    return resp.json()

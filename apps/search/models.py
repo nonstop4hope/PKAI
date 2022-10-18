@@ -5,8 +5,7 @@ from dataclasses_json import dataclass_json
 from pydantic import BaseModel
 
 
-@dataclass
-class Author:
+class Author(BaseModel):
     affiliation: str = ''
     name: str = ''
 
@@ -42,6 +41,7 @@ class CitationHit(BaseModel):
 
 
 class GeneralizedHit(BaseModel):
+    id: str = ''
     source: str = ''
     title: str = ''
     description: str = ''
@@ -62,3 +62,15 @@ class GeneralizedHit(BaseModel):
 class ApiResponse(BaseModel):
     hits: List[GeneralizedHit] = []
     total_records: int = 0
+
+
+class CitationsShort(BaseModel):
+    number: int = 0
+    doi_list: List[str] = []
+
+
+class CrossrefInfo(BaseModel):
+    doi: str = ''
+    url: str = ''
+    title: str = ''
+    authors: List[Author] = []
