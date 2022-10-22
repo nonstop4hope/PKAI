@@ -1,7 +1,6 @@
-from dataclasses import dataclass, field
 from typing import List
 
-from dataclasses_json import dataclass_json
+
 from pydantic import BaseModel
 
 
@@ -10,21 +9,18 @@ class Author(BaseModel):
     name: str = ''
 
 
-@dataclass
-class Hit:
+class Hit(BaseModel):
     title: str = ''
     description: str = ''
     publication_date: str = ''
-    keywords: List[str] = field(default_factory=list)
+    keywords: List[str] = []
     link: str = ''
     access_right: str = ''
-    creators: List[Author] = field(default_factory=list)
+    creators: List[Author] = []
 
 
-@dataclass_json
-@dataclass
-class ApiResult:
-    records: List[Hit] = field(default_factory=list)
+class ApiResult(BaseModel):
+    records: List[Hit] = []
     current_page: int = 0
     total_records: int = 0
     message: str = ''

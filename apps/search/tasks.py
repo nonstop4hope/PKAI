@@ -1,5 +1,3 @@
-import dataclasses
-import time
 from typing import Dict
 
 from celery import shared_task
@@ -20,7 +18,7 @@ def get_zenodo_records_async(search_query: str, page: int) -> Dict:
         page = 1000
 
     records = zenodo_api.get_records_by_query(search_query, page)
-    return dataclasses.asdict(records)
+    return records.dict()
 
 
 @shared_task(name='get_core_records')
@@ -32,4 +30,4 @@ def get_core_records_async(search_query: str, page: int) -> Dict:
         page = 1000
 
     task_result = core_api.get_records_by_query(search_query, page)
-    return dataclasses.asdict(task_result)
+    return task_result.dict()
