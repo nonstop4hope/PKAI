@@ -1,20 +1,19 @@
 from typing import List
 
-import requests.models
 from django.conf import settings
 
 from apps.search.api import celery_async_requests
-from apps.search.api.search import Search
+from apps.search.api.base_search import BaseSearch
 from apps.search.models import GeneralizedHit, Author
 
 
-class Zenodo(Search):
+class Zenodo(BaseSearch):
 
     def __int__(self):
         self.zenodo_access_token: str = settings.ZENODO_ACCESS_TOKEN
         self.size: int = 50
 
-    def _get_zenodo_async_responses(self, total_pages: int, query: str) -> List[requests.models.Response]:
+    def _get_zenodo_async_tasks(self, total_pages: int, query: str):
         """ create async request to zenodo """
         async_tasks = []
         for page in range(1, total_pages + 1):
@@ -23,12 +22,13 @@ class Zenodo(Search):
                       'page': page}
             async_tasks.append(celery_async_requests.get.delay(url='https://zenodo.org/api/records', params=params))
 
-        return [async_task.wait(interval=0.5) for async_task in async_tasks]
+        return async_tasks
 
     def _parse_one_zenodo_hit(self, hit_json) -> GeneralizedHit:  # TODO: set input type
         """ parse one json to generalized model """
         hit = GeneralizedHit()
         hit.source = 'zenodo'
+        hit.id = hit_json['id']
         hit.title = hit_json['metadata']['title']
         hit.description = self._remove_tags(hit_json['metadata']['description']).replace('\n', ' ')
         hit.publication_date = hit_json['metadata']['publication_date']

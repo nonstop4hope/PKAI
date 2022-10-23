@@ -9,7 +9,7 @@ from celery.result import AsyncResult
 from django.conf import settings
 
 from apps.search.api import celery_async_requests
-from apps.search.api.search import Search
+from apps.search.api.base_search import BaseSearch
 from apps.search.celery_result import get_task_state_by_id
 from apps.search.models import GeneralizedHit, Author
 
@@ -18,15 +18,14 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
-class Core(Search):
+class Core(BaseSearch):
 
     def __init__(self):
         super().__init__()
         self.access_token = settings.CORE_ACCESS_TOKEN
         self.size = 50
 
-    def _get_core_async_responses(self, query: str, total_pages: int, records_per_query: int = 50) -> \
-            List[requests.models.Response]:
+    def _get_core_async_tasks(self, query: str, total_pages: int, records_per_query: int = 50):
         headers = {'Authorization': f'Bearer {self.access_token}'}
         async_tasks = []
         body = {'q': query,
@@ -35,7 +34,8 @@ class Core(Search):
         async_tasks.append(celery_async_requests.post.delay(url='https://api.core.ac.uk/v3/search/works',
                                                                 headers=headers, body=body))
 
-        return [async_task.wait(interval=0.1) for async_task in async_tasks]
+        return async_tasks
+        # return [async_task.wait(interval=0.1) for async_task in async_tasks]
 
     def _parse_one_core_hit(self, hit_json) -> GeneralizedHit:  # TODO: access_right
 
@@ -61,6 +61,7 @@ class Core(Search):
         hit.doi = hit_json['doi']
         hit.id = hit_json['id']
         hit.language = hit_json['language']['code']
+        hit.citations_number = hit_json['citationCount']
 
         if len(hit_json['documentType']) > 0:
             hit.type = hit_json['documentType']

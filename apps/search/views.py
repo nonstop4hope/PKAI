@@ -37,8 +37,10 @@ def get_celery_result_by_id(request):
 
 
 def get_generalized_results(request):
-    search_query = request.GET.get('query')
-    search = SearchAPI()
-    # response = search.get_zenodo_records_by_query_async(search_query)
-    response = search.get_core_records_by_query_async(search_query)
-    return JsonResponse(response.dict(), safe=False)
+    if request.user.is_authenticated:
+        search_query = request.GET.get('query')
+        search = SearchAPI()
+        response = search.get_records_by_query_async(search_query=search_query)
+        return JsonResponse(response.dict(), safe=False)
+    else:
+        return JsonResponse({"detail": "Authentication credentials were not provided."}, status=HTTPStatus.FORBIDDEN)
