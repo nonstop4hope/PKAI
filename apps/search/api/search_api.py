@@ -7,24 +7,27 @@ from apps.search.models import ApiResponse
 class SearchAPI(Core, Zenodo):
 
     def get_records_by_query_async(self, search_query: str, total_pages: int = 5) -> ApiResponse:
+
         response = ApiResponse()
-        core_api_tasks = self._get_core_async_tasks(query=search_query, total_pages=total_pages)
+
+        core_api_tasks = self._get_core_async_tasks(query=search_query)
         zenodo_api_tasks = self._get_zenodo_async_tasks(query=search_query, total_pages=total_pages)
+
         core_api_responses = [core_task.wait(interval=0.1) for core_task in core_api_tasks]
         zenodo_api_responses = [zenodo_task.wait(interval=0.1) for zenodo_task in zenodo_api_tasks]
-        for api_response in core_api_responses:
-            response.hits += self._get_core_hits(api_response=api_response)
 
+        for api_response in core_api_responses:
+            response.hits += self._get_core_hits(api_response=api_response, query=search_query)
+        #
         zenodo_hits = []
         for api_response in zenodo_api_responses:
-            zenodo_hits += self._get_zenodo_hits(api_response=api_response)
+            zenodo_hits += self._get_zenodo_hits(api_response=api_response, query=search_query)
+        #
+        # zenodo_hits_citations = get_zenodo_citations([hit.doi for hit in zenodo_hits])
+        #
+        # for hit, citations_num in zip(zenodo_hits, zenodo_hits_citations):
+        #     hit.citations_number = citations_num
+        #     response.hits.append(hit)
 
-        zenodo_hits_citations = get_zenodo_citations([hit.doi for hit in zenodo_hits])
-
-        for hit, citations_num in zip(zenodo_hits, zenodo_hits_citations):
-            hit.citations_number = citations_num
-            response.hits.append(hit)
-        # for api_response in zenodo_api_responses:
-        #     response.hits += self._get_zenodo_hits(api_response=api_response)
         response.total_records = len(response.hits)
         return response

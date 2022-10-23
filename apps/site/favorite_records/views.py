@@ -1,8 +1,12 @@
+import logging
+
 from django.http import JsonResponse
 from rest_framework import generics, permissions
 
 from apps.site.favorite_records.models import FavoriteRecord
 from apps.site.favorite_records.serializers import FavoriteRecordSerializer
+
+logger = logging.getLogger('__name__')
 
 
 class AddRecordToFavorites(generics.CreateAPIView):
@@ -22,6 +26,7 @@ class AddRecordToFavorites(generics.CreateAPIView):
 
 
 class ListFavoriteRecords(generics.ListAPIView):
+
     serializer_class = FavoriteRecordSerializer
     permission_classes = (permissions.IsAuthenticated,)
 

@@ -1,6 +1,7 @@
 from typing import List
 
-
+from django.contrib.postgres.fields import ArrayField
+from django.db import models
 from pydantic import BaseModel
 
 
@@ -55,6 +56,14 @@ class GeneralizedHit(BaseModel):
     citations: List[CitationHit] = []
 
 
+class File(BaseModel):
+    checksum: str = ''
+    key: str = ''
+    link: str = ''
+    size: int = 0
+    type: str = ''
+
+
 class ApiResponse(BaseModel):
     hits: List[GeneralizedHit] = []
     total_records: int = 0
@@ -70,3 +79,20 @@ class CrossrefInfo(BaseModel):
     url: str = ''
     title: str = ''
     authors: List[Author] = []
+
+
+class GeneralizedHitsSearch(models.Model):
+
+    query = models.TextField(default=None)
+    source = models.CharField(max_length=255)
+    source_id = models.BigIntegerField()
+    title = models.TextField()
+    description = models.TextField(null=True, default=None)
+    doi = models.CharField(max_length=255, default=None, null=True)
+    type = models.CharField(max_length=255, default=None, null=True)
+    language = models.CharField(max_length=255, default=None, null=True)
+    publication_date = models.DateTimeField(default=None, null=True)
+    # source_keywords = ArrayField(models.CharField(max_length=255), size=50)
+    original_url = models.CharField(max_length=255, default=None, null=True)
+    access_right = models.CharField(max_length=255, default=None, null=True)
+    citations_number = models.IntegerField(default=0)
