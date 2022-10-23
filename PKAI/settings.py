@@ -29,7 +29,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", False)
 DEBUG = os.getenv("DEBUG", False) == 'TRUE'
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(" ")
-
+CSRF_TRUSTED_ORIGINS = [f'https://{host}'for host in ALLOWED_HOSTS]
 
 # Application definition
 
@@ -133,9 +133,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = 'staticfiles/'
 
-STATIC_ROOT = os.getenv('STATIC_ROOT', 'static/')
+STATIC_ROOT = BASE_DIR / "staticfiles/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -164,7 +164,7 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
-# TARGET MAIL BOX
+# TARGET MAILBOX
 TARGET_MAIL_BOX = os.getenv('TARGET_MAIL_BOX')
 
 # NEWS URL

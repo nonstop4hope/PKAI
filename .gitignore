@@ -5,4 +5,6 @@ db.sqlite3
 .env
 *.pyc
 .DS_store
-/static/
+/staticfiles/
+celerybeat-schedule
+.env.prod

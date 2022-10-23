@@ -18,6 +18,8 @@ django-phonenumber-field==6.3.0
 djangorestframework==3.13.1
 djangorestframework-simplejwt==5.2.0
 filelock==3.8.0
+gunicorn==20.1.0
+h11==0.14.0
 huggingface-hub==0.10.1
 idna==3.4
 joblib==1.2.0
@@ -60,6 +62,7 @@ typing-inspect==0.8.0
 typing_extensions==4.4.0
 urllib3==1.26.12
 user-agent==0.1.10
+uvicorn==0.19.0
 vine==5.0.0
 wcwidth==0.2.5
 wrapt==1.14.1
