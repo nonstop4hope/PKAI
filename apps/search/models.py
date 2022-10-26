@@ -81,6 +81,11 @@ class CrossrefInfo(BaseModel):
     authors: List[Author] = []
 
 
+class HitAuthor(models.Model):
+    affiliation = models.TextField(default=None, null=True)
+    name = models.TextField(default=None, blank=True)
+
+
 class GeneralizedHitsSearch(models.Model):
 
     query = models.TextField(default=None)
@@ -92,7 +97,9 @@ class GeneralizedHitsSearch(models.Model):
     type = models.CharField(max_length=255, default=None, null=True)
     language = models.CharField(max_length=255, default=None, null=True)
     publication_date = models.DateTimeField(default=None, null=True)
-    # source_keywords = ArrayField(models.CharField(max_length=255), size=50)
+    source_keywords = ArrayField(models.CharField(max_length=255, blank=True), default=list, blank=True)
     original_url = models.CharField(max_length=255, default=None, null=True)
     access_right = models.CharField(max_length=255, default=None, null=True)
     citations_number = models.IntegerField(default=0)
+    creation_date = models.DateTimeField(auto_now_add=True)
+    authors = models.ManyToManyField(HitAuthor, related_name='hits_list', blank=True)
