@@ -56,12 +56,12 @@ class GeneralizedHit(BaseModel):
     citations: List[CitationHit] = []
 
 
-class File(BaseModel):
-    checksum: str = ''
-    key: str = ''
-    link: str = ''
-    size: int = 0
-    type: str = ''
+# class File(BaseModel):
+#     checksum: str = ''
+#     key: str = ''
+#     link: str = ''
+#     size: int = 0
+#     type: str = ''
 
 
 class ApiResponse(BaseModel):
@@ -86,8 +86,15 @@ class HitAuthor(models.Model):
     name = models.TextField(default=None, blank=True)
 
 
-class GeneralizedHitsSearch(models.Model):
+class File(models.Model):
+    checksum = models.CharField(max_length=512, blank=True, null=True)
+    key = models.CharField(max_length=255, blank=True, null=True)
+    link = models.CharField(max_length=255, blank=True, null=True)
+    size = models.BigIntegerField(default=0)
+    type = models.CharField(max_length=255)
 
+
+class GeneralizedHitsSearch(models.Model):
     query = models.TextField(default=None)
     source = models.CharField(max_length=255)
     source_id = models.BigIntegerField()
@@ -104,3 +111,4 @@ class GeneralizedHitsSearch(models.Model):
     citations_number = models.IntegerField(default=0)
     creation_date = models.DateTimeField(auto_now_add=True)
     authors = models.ManyToManyField(HitAuthor, related_name='hits_list', blank=True)
+    files = models.ManyToManyField(File, related_name='files_list', blank=True)
