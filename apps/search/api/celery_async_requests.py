@@ -2,6 +2,7 @@ import requests.models
 from celery import shared_task
 from celery.utils.log import get_task_logger
 
+
 logger = get_task_logger(__name__)
 
 
@@ -18,5 +19,4 @@ def post(url: str, body=None, headers=None, timeout: int = 30):
     if headers is None:
         headers = {}
     resp = requests.post(url=url, json=body, headers=headers, timeout=timeout)
-    logger.info(resp.status_code)
     return resp.json()

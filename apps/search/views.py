@@ -5,15 +5,14 @@ from http import HTTPStatus
 from django.http import JsonResponse
 from rest_framework import generics, permissions, mixins
 from rest_framework.response import Response
-from rest_framework.exceptions import MethodNotAllowed
 
 from .api import zenodo_citations
 from .api.search_api import SearchAPI
 from .celery_result import get_task_state_by_id
 from .models import GeneralizedHitsSearch
 from .serializers import GeneralizedHitsSearchSerializer, OneHitSerializer
-from .tasks import get_zenodo_records_async
 from .tasks import get_core_records_async
+from .tasks import get_zenodo_records_async
 
 logger = logging.getLogger('__name__')
 

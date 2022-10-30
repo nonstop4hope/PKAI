@@ -6,6 +6,7 @@ from django.conf import settings
 
 from apps.search.api import celery_async_requests
 from apps.search.api.base_search import BaseSearch
+from apps.search.exceptions import TooManyRequests
 from apps.search.models import GeneralizedHitsSearch, HitAuthor, File, RelatedIdentifier
 
 logging.basicConfig(level=logging.DEBUG)
@@ -96,7 +97,9 @@ class Core(BaseSearch):
 
         return hit
 
-    def _get_core_hits(self, api_response, query: str) -> List[GeneralizedHitsSearch]:
+    def _get_core_hits(self, api_response: dict, query: str) -> List[GeneralizedHitsSearch]:
+        if 'results' not in api_response.keys():
+            raise TooManyRequests
         return [self._parse_one_core_hit(core_hit, query=query) for core_hit in api_response['results']]
 
     def get_single_core_hit(self, hit_id) -> GeneralizedHitsSearch:

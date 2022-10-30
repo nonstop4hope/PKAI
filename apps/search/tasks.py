@@ -1,9 +1,12 @@
+from datetime import datetime, timedelta
 from typing import Dict
 
 from celery import shared_task
 from celery.utils.log import get_task_logger
+from django.db.models.functions import Now
 
 from apps.search.core.core_api import CoreAPI
+from apps.search.models import GeneralizedHitsSearch
 from apps.search.zenodo.zenodo_api import ZenodoAPI
 
 logger = get_task_logger(__name__)
@@ -31,3 +34,8 @@ def get_core_records_async(search_query: str, page: int) -> Dict:
 
     task_result = core_api.get_records_by_query(search_query, page)
     return task_result.dict()
+
+
+@shared_task
+def remove_old_hits() -> None:
+    logger.info(GeneralizedHitsSearch.objects.filter(creation_date__lte=Now()-timedelta(hours=2)).delete())

@@ -43,4 +43,4 @@ class OneHitSerializer(serializers.ModelSerializer):
         model = GeneralizedHitsSearch
         fields = ('source_id', 'title', 'description', 'doi', 'type', 'language', 'publication_date',
                   'original_url', 'access_right', 'citations_number', 'source_keywords', 'authors', 'full_text',
-                  'files')
+                  'files', 'related_identifiers')

@@ -119,5 +119,4 @@ class GeneralizedHitsSearch(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True)
     authors = models.ManyToManyField(HitAuthor, related_name='hits_list', blank=True)
     files = models.ManyToManyField(File, related_name='files_list', blank=True)
-    # related_issn = ArrayField(models.CharField(max_length=255, blank=True), default=list, blank=True)
     related_identifiers = models.ManyToManyField(RelatedIdentifier, related_name='related_identifiers_list', blank=True)

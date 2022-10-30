@@ -1,11 +1,17 @@
+import logging
 from typing import List
 
 import requests
 from django.conf import settings
+from requests import Response
 
 from apps.search.api import celery_async_requests
 from apps.search.api.base_search import BaseSearch
+from apps.search.exceptions import TooManyRequests
 from apps.search.models import GeneralizedHitsSearch, HitAuthor, File, RelatedIdentifier
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 
 class Zenodo(BaseSearch):
@@ -93,7 +99,9 @@ class Zenodo(BaseSearch):
 
         return hit
 
-    def _get_zenodo_hits(self, api_response: dict, query: str) -> List[GeneralizedHitsSearch]:
+    def _get_zenodo_hits(self, api_response, query: str) -> List[GeneralizedHitsSearch]:
+        if 'hits' not in api_response.keys():
+            raise TooManyRequests
         return [self._parse_one_zenodo_hit(zenodo_hit, query=query) for zenodo_hit in api_response['hits']['hits']]
 
     def get_single_zenodo_hit(self, hit_id) -> GeneralizedHitsSearch:

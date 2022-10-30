@@ -20,4 +20,9 @@ app.conf.beat_schedule = {
         'task': 'apps.site.news.tasks.collect_news',
         'schedule': crontab(minute=0, hour=0),
     },
+    'remove_old_hits': {
+        'task': 'apps.search.tasks.remove_old_hits',
+        'schedule': crontab(minute='*/10')
+    },
 }
+
