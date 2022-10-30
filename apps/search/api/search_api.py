@@ -5,12 +5,12 @@ from apps.search.models import ApiResponse
 
 class SearchAPI(Core, Zenodo):
 
-    def get_records_by_query_async(self, search_query: str, total_pages: int = 5) -> ApiResponse:
+    def get_records_by_query_async(self, search_query: str, sort: str, total_pages: int = 5) -> ApiResponse:
 
         response = ApiResponse()
 
         core_api_tasks = self._get_core_async_tasks(query=search_query)
-        zenodo_api_tasks = self._get_zenodo_async_tasks(query=search_query, total_pages=total_pages)
+        zenodo_api_tasks = self._get_zenodo_async_tasks(query=search_query, total_pages=total_pages, sort=sort)
 
         core_api_responses = [core_task.wait(interval=0.1) for core_task in core_api_tasks]
         zenodo_api_responses = [zenodo_task.wait(interval=0.1) for zenodo_task in zenodo_api_tasks]

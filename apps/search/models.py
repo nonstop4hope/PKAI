@@ -84,6 +84,7 @@ class CrossrefInfo(BaseModel):
 class HitAuthor(models.Model):
     affiliation = models.TextField(default=None, null=True)
     name = models.TextField(default=None, blank=True)
+    creation_date = models.DateTimeField(auto_now_add=True)
 
 
 class File(models.Model):
@@ -92,6 +93,12 @@ class File(models.Model):
     link = models.CharField(max_length=255, blank=True, null=True)
     size = models.BigIntegerField(default=0)
     type = models.CharField(max_length=255)
+    creation_date = models.DateTimeField(auto_now_add=True)
+
+
+class RelatedIdentifier(models.Model):
+    scheme = models.CharField(max_length=255)
+    identifier = models.CharField(max_length=255)
 
 
 class GeneralizedHitsSearch(models.Model):
@@ -112,3 +119,5 @@ class GeneralizedHitsSearch(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True)
     authors = models.ManyToManyField(HitAuthor, related_name='hits_list', blank=True)
     files = models.ManyToManyField(File, related_name='files_list', blank=True)
+    # related_issn = ArrayField(models.CharField(max_length=255, blank=True), default=list, blank=True)
+    related_identifiers = models.ManyToManyField(RelatedIdentifier, related_name='related_identifiers_list', blank=True)

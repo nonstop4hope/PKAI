@@ -5,6 +5,7 @@ from http import HTTPStatus
 from django.http import JsonResponse
 from rest_framework import generics, permissions, mixins
 from rest_framework.response import Response
+from rest_framework.exceptions import MethodNotAllowed
 
 from .api import zenodo_citations
 from .api.search_api import SearchAPI
@@ -67,7 +68,11 @@ class GeneralizedSearch(generics.ListAPIView):
         query = self.request.query_params['query']
         if len(GeneralizedHitsSearch.objects.filter(query=query)) == 0:
             search = SearchAPI()
-            search.get_records_by_query_async(search_query=self.request.query_params['query'])
+            if 'sort' in self.request.query_params:
+                sort = self.request.query_params['sort']
+            else:
+                sort = None
+            search.get_records_by_query_async(search_query=self.request.query_params['query'], sort=sort)
             logger.info(datetime.now())
             zenodo_citations.add_zenodo_citations(query=query)
         return self.list(request, *args, **kwargs)
