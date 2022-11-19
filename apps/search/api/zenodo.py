@@ -45,7 +45,15 @@ class Zenodo(BaseSearch):
         hit.source = 'zenodo'
         hit.source_id = hit_json['id']
         hit.title = hit_json['metadata']['title']
-        hit.description = self._remove_tags(hit_json['metadata']['description']).replace('\n', ' ')
+
+        description = self._remove_tags(hit_json['metadata']['description']).replace('\n', ' ')
+        if len(description) > 255:
+            hit.description = description[:255] + '...'
+        else:
+            hit.description = description
+
+        hit.full_text = description
+
         hit.publication_date = hit_json['metadata']['publication_date']
         try:
             for keyword in hit_json['metadata']['keywords']:
