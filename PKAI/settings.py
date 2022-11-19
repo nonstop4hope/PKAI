@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'apps.site.favorite_records',
     'corsheaders',
     'apps.site.contact_form',
+    'apps.translate',
 ]
 
 MIDDLEWARE = [
