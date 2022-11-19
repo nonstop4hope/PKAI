@@ -69,11 +69,6 @@ class ApiResponse(BaseModel):
     total_records: int = 0
 
 
-class CitationsShort(BaseModel):
-    number: int = 0
-    doi_list: List[str] = []
-
-
 class CrossrefInfo(BaseModel):
     doi: str = ''
     url: str = ''

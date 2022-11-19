@@ -7,6 +7,7 @@ from rest_framework import generics, permissions, mixins
 from rest_framework.response import Response
 
 from .api import zenodo_citations
+from .api.opencitations_api import OpencitationsAPI
 from .api.search_api import SearchAPI
 from .celery_result import get_task_state_by_id
 from .models import GeneralizedHitsSearch
@@ -72,8 +73,6 @@ class GeneralizedSearch(generics.ListAPIView):
             else:
                 sort = None
             search.get_records_by_query_async(search_query=self.request.query_params['query'], sort=sort)
-            logger.info(datetime.now())
-            zenodo_citations.add_zenodo_citations(query=query)
         return self.list(request, *args, **kwargs)
 
 
@@ -84,6 +83,7 @@ class OneHit(mixins.RetrieveModelMixin, generics.GenericAPIView):
     def retrieve(self, request, *args, **kwargs):
         source_id = self.request.query_params['id']
         source = request.query_params['source']
+        opencitations = OpencitationsAPI()
         try:
             instance = GeneralizedHitsSearch.objects.get(source_id=source_id, source=source)
         except GeneralizedHitsSearch.DoesNotExist:
@@ -91,11 +91,11 @@ class OneHit(mixins.RetrieveModelMixin, generics.GenericAPIView):
             if source == 'zenodo':
                 search.get_single_zenodo_hit(source_id)
                 instance = GeneralizedHitsSearch.objects.get(source_id=source_id, source=source)
-            elif source == 'core':
+            else:
                 search.get_single_core_hit(source_id)
                 instance = GeneralizedHitsSearch.objects.get(source_id=source_id, source=source)
-            else:
-                pass
+        finally:
+            instance.citations_number = opencitations.get_opencitation_statistic(instance.doi)
 
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
