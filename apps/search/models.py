@@ -85,7 +85,7 @@ class HitAuthor(models.Model):
 class File(models.Model):
     checksum = models.CharField(max_length=512, blank=True, null=True)
     key = models.CharField(max_length=255, blank=True, null=True)
-    link = models.CharField(max_length=255, blank=True, null=True)
+    link = models.CharField(max_length=1024, blank=True, null=True)
     size = models.BigIntegerField(default=0)
     type = models.CharField(max_length=255)
     creation_date = models.DateTimeField(auto_now_add=True)
