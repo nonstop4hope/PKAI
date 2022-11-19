@@ -12,6 +12,7 @@ click-repl==0.2.0
 commonmark==0.9.1
 dataclasses-json==0.5.7
 Deprecated==1.2.13
+dill==0.3.6
 Django==4.0.6
 django-cors-headers==3.13.0
 django-phonenumber-field==6.3.0
@@ -27,15 +28,20 @@ keybert==0.6.0
 kombu==5.2.4
 marshmallow==3.18.0
 marshmallow-enum==1.5.1
+multiprocess==0.70.14
 mypy-extensions==0.4.3
 nltk==3.7
 numpy==1.23.4
 packaging==21.3
+pathos==0.3.0
 phonenumbers==8.12.52
 Pillow==9.2.0
+pox==0.3.2
+ppft==1.7.6.6
 prompt-toolkit==3.0.31
 psycopg2-binary==2.9.3
 pydantic==1.10.2
+PyExecJS==1.5.1
 Pygments==2.13.0
 PyJWT==2.6.0
 pyparsing==3.0.9
@@ -66,4 +72,3 @@ uvicorn==0.19.0
 vine==5.0.0
 wcwidth==0.2.5
 wrapt==1.14.1
-pathos~=0.3.0
