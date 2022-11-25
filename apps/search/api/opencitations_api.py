@@ -1,5 +1,3 @@
-from typing import List
-
 import requests
 
 
@@ -17,4 +15,7 @@ class OpencitationsAPI:
 
     def get_opencitation_statistic(self, doi: str) -> int:
         response = requests.get(f'{self.url}{doi}')
-        return self._parse_opencitations_response(response.json())
+        if doi is not None:
+            return self._parse_opencitations_response(response.json())
+        else:
+            return 0
