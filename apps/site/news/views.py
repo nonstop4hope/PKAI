@@ -11,9 +11,12 @@ class NewsCreateApi(generics.CreateAPIView):
 
 
 class NewsListApi(generics.ListAPIView):
-    queryset = News.objects.all()
     serializer_class = NewsSerializer
     # permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        queryset = News.objects.all()
+        return queryset.order_by('publication_date').reverse()
 
 
 class NewsUpdateApi(generics.RetrieveUpdateAPIView):
