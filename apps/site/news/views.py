@@ -1,4 +1,6 @@
-from rest_framework import generics
+from rest_framework import generics, status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .models import News
 from .serializers import NewsSerializer
@@ -17,6 +19,25 @@ class NewsListApi(generics.ListAPIView):
     def get_queryset(self):
         queryset = News.objects.all()
         return queryset.order_by('publication_date').reverse()
+
+
+class NewsOneApi(APIView):
+    # serializer_class = NewsSerializer
+    #
+    # def get_queryset(self):
+    #     return News.objects.filter(pk=self.kwargs['news_id'])
+
+    def get(self, request, news_id, *args, **kwargs):
+        instance = News.objects.get(pk=self.kwargs['news_id'])
+
+        if not instance:
+            return Response(
+                {"res": "Object with todo id does not exists"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        serializer = NewsSerializer(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class NewsUpdateApi(generics.RetrieveUpdateAPIView):
