@@ -28,11 +28,12 @@ class NewsOneApi(APIView):
     #     return News.objects.filter(pk=self.kwargs['news_id'])
 
     def get(self, request, news_id, *args, **kwargs):
-        instance = News.objects.get(pk=self.kwargs['news_id'])
 
-        if not instance:
+        try:
+            instance = News.objects.get(pk=self.kwargs['news_id'])
+        except News.DoesNotExist:
             return Response(
-                {"res": "Object with todo id does not exists"},
+                {"res": "Object with news id does not exists"},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
