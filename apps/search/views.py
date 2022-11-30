@@ -86,6 +86,7 @@ class OneHit(mixins.RetrieveModelMixin, generics.GenericAPIView):
         opencitations = OpencitationsAPI()
         try:
             instance = GeneralizedHitsSearch.objects.get(source_id=source_id, source=source)
+            instance.citations_number = opencitations.get_opencitation_statistic(instance.doi)
         except GeneralizedHitsSearch.DoesNotExist:
             search = SearchAPI()
             if source == 'zenodo':
@@ -94,7 +95,6 @@ class OneHit(mixins.RetrieveModelMixin, generics.GenericAPIView):
             else:
                 search.get_single_core_hit(source_id)
                 instance = GeneralizedHitsSearch.objects.get(source_id=source_id, source=source)
-        finally:
             instance.citations_number = opencitations.get_opencitation_statistic(instance.doi)
 
         serializer = self.get_serializer(instance)

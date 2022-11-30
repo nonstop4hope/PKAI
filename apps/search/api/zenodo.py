@@ -7,7 +7,7 @@ from requests import Response
 
 from apps.search.api import celery_async_requests
 from apps.search.api.base_search import BaseSearch
-from apps.search.exceptions import TooManyRequests
+from apps.search.exceptions import TooManyRequests, RecordIsNotExists
 from apps.search.models import GeneralizedHitsSearch, HitAuthor, File, RelatedIdentifier
 
 logging.basicConfig(level=logging.DEBUG)
@@ -36,7 +36,11 @@ class Zenodo(BaseSearch):
 
     @staticmethod
     def _request_to_single_zenodo_hit(hit_id: str) -> dict:
-        return requests.get(f'https://zenodo.org/api/records/{hit_id}').json()
+        response = requests.get(f'https://zenodo.org/api/records/{hit_id}')
+        if response.status_code == 200:
+            return response.json()
+        else:
+            raise RecordIsNotExists
 
     def _parse_one_zenodo_hit(self, hit_json, query: str = '') -> GeneralizedHitsSearch:  # TODO: set input type
         """ parse one json to generalized model """

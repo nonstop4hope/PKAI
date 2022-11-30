@@ -6,7 +6,7 @@ from django.conf import settings
 
 from apps.search.api import celery_async_requests
 from apps.search.api.base_search import BaseSearch
-from apps.search.exceptions import TooManyRequests
+from apps.search.exceptions import TooManyRequests, RecordIsNotExists
 from apps.search.models import GeneralizedHitsSearch, HitAuthor, File, RelatedIdentifier
 
 logging.basicConfig(level=logging.DEBUG)
@@ -32,7 +32,11 @@ class Core(BaseSearch):
         return async_tasks
 
     def _request_to_single_core_hit(self, hit_id: str) -> dict:
-        return requests.get(f'https://api.core.ac.uk/v3/works/{hit_id}', headers=self.headers).json()
+        response = requests.get(f'https://api.core.ac.uk/v3/works/{hit_id}', headers=self.headers)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            raise RecordIsNotExists
 
     def _parse_one_core_hit(self, hit_json, query: str = '') -> GeneralizedHitsSearch:  # TODO: access_right
 
