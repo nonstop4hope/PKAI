@@ -171,4 +171,5 @@ TARGET_MAIL_BOX = os.getenv('TARGET_MAIL_BOX')
 # NEWS URL
 SOURCE_NEWS_URL = os.getenv('SOURCE_NEWS_URL')
 
+TEMP_DIR = os.getenv('TEMP_DIR')
 

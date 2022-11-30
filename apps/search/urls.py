@@ -8,5 +8,6 @@ urlpatterns = [
     # path('result', views.get_celery_result_by_id),
     # path('general', views.get_generalized_results),
     path('search', views.GeneralizedSearch.as_view()),
-    path('get', views.OneHit.as_view())
+    path('get', views.OneHit.as_view()),
+    path('get-file', views.GetFile.as_view()),
 ]

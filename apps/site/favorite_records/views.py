@@ -15,11 +15,10 @@ logger = logging.getLogger('__name__')
 class AddRecordToFavorites(generics.CreateAPIView):
 
     serializer_class = FavoriteRecordSerializer
-    # permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
-        # user = request.user.id
-        user = 2
+        user = request.user.id
         record_id = request.POST.get('id')
         try:
             record = GeneralizedHitsSearch.objects.get(pk=record_id)
@@ -34,12 +33,10 @@ class AddRecordToFavorites(generics.CreateAPIView):
 class ListFavoriteRecords(generics.ListAPIView):
 
     serializer_class = FavoriteRecordSerializer
-    # permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
         user = self.request.user.id
-        user = 2
-        logger.info(user)
         return FavoriteRecord.objects.filter(user=user)
 
 

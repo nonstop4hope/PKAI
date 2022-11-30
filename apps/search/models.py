@@ -115,3 +115,9 @@ class GeneralizedHitsSearch(models.Model):
     authors = models.ManyToManyField(HitAuthor, related_name='hits_list', blank=True)
     files = models.ManyToManyField(File, related_name='files_list', blank=True)
     related_identifiers = models.ManyToManyField(RelatedIdentifier, related_name='related_identifiers_list', blank=True)
+
+
+class DownloadedFile(BaseModel):
+    name: str
+    path: str
+    content_type: str

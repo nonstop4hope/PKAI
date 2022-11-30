@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 from http import HTTPStatus
 
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from rest_framework import generics, permissions, mixins
 from rest_framework.response import Response
 
@@ -10,6 +10,7 @@ from .api import zenodo_citations
 from .api.opencitations_api import OpencitationsAPI
 from .api.search_api import SearchAPI
 from .celery_result import get_task_state_by_id
+from .file_downloader import get_file_from_url
 from .models import GeneralizedHitsSearch
 from .serializers import GeneralizedHitsSearchSerializer, OneHitSerializer
 from .tasks import get_core_records_async
@@ -102,3 +103,19 @@ class OneHit(mixins.RetrieveModelMixin, generics.GenericAPIView):
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
+
+
+class GetFile(mixins.RetrieveModelMixin, generics.GenericAPIView):
+
+    def get(self, request, *args, **kwargs):
+        url = request.GET.get('url')
+        file = get_file_from_url(url)
+        logger.info(file)
+
+        with open(file.path, 'rb') as f:
+            file_data = f.read()
+
+        logger.info(file)
+        response = HttpResponse(file_data, content_type=file.content_type)
+        response['Content-Disposition'] = f'attachment; filename={file.name}'
+        return response

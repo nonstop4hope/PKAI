@@ -15,7 +15,7 @@ class OpencitationsAPI:
 
     def get_opencitation_statistic(self, doi: str) -> int:
         response = requests.get(f'{self.url}{doi}')
-        if doi is not None:
+        if doi is not None and len(response.text) > 0:
             return self._parse_opencitations_response(response.json())
         else:
             return 0

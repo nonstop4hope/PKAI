@@ -15,3 +15,9 @@ class RecordIsNotExists(APIException, Exception):
     status_code = 404
     default_detail = 'Sorry, can not find record'
     default_code = 'service_unavailable'
+
+
+class CantDownloadFile(APIException, Exception):
+    status_code = 400
+    default_detail = 'Sorry, can not download file'
+    default_code = 'service_unavailable'
