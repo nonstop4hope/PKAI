@@ -62,7 +62,26 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = False
+
+CORS_ALLOWED_ORIGINS = [f'https://{host}'for host in ALLOWED_HOSTS]
+CORS_ALLOWED_ORIGINS += [f'http://{host}'for host in ALLOWED_HOSTS]
+
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
+
+CORS_URLS_REGEX = r"^/api/.*$"
+
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'PKAI.urls'
 

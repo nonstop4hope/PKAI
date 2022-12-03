@@ -49,7 +49,7 @@ def user_logout(request):
 
     return HttpResponse(status=200)
 
-
+@csrf_exempt
 def user_is_login(request):
 
     if request.user.is_authenticated:
