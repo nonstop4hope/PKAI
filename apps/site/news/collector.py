@@ -4,6 +4,7 @@ from typing import NamedTuple, List
 import requests
 import user_agent
 from celery.utils.log import get_task_logger
+from bs4 import BeautifulSoup
 
 from PKAI.settings import SOURCE_NEWS_URL
 from apps.site.news.models import News
@@ -60,8 +61,11 @@ class NewsCollector:
 
     @staticmethod
     def parse_news_body(body: str) -> str:
-        CLEANR = re.compile('<.*?>')
-        return re.sub(CLEANR, '', body)
+        soup = BeautifulSoup(body)
+        text = ''
+        for div in soup.find_all('div'):
+            text += f'{div.get_text()}\n'
+        return text
 
     def collect(self) -> None:
         last_news = self.get_last_news()
