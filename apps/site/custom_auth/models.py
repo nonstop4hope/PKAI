@@ -10,6 +10,7 @@ class UserManager(BaseUserManager):
             raise ValueError('Email is Required')
 
         user = self.model(email=self.normalize_email(email), **extra_fields)
+
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -28,8 +29,8 @@ class UserManager(BaseUserManager):
 
 
 class UserData(AbstractUser):
-    username = None
-    name = models.CharField(max_length=100, unique=True)
+    # username = None
+    username = models.CharField(max_length=100, unique=True)
     email = models.EmailField(max_length=100, unique=True)
     date_joined = models.DateTimeField(auto_now_add=True)
     is_admin = models.BooleanField(default=False)
@@ -39,8 +40,8 @@ class UserData(AbstractUser):
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['name']
+    USERNAME_FIELD = 'username'
+    # REQUIRED_FIELDS = ['username']
 
     def __str__(self):
-        return self.name
+        return self.username

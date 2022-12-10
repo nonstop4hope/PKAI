@@ -54,7 +54,10 @@
 #         return HttpResponse(status=200)
 #
 #     return HttpResponse(status=401)
+from http.client import HTTPException
+
 from django.shortcuts import render
+from rest_framework.exceptions import ValidationError
 from rest_framework.views import APIView
 from .serializers import UserSerializer
 from rest_framework.response import Response
@@ -62,7 +65,15 @@ from rest_framework.response import Response
 
 # view for registering users
 class RegisterView(APIView):
+
     def post(self, request):
+
+        if 'password2' not in request.data.keys():
+            raise ValidationError(detail='Please set password2')
+
+        if request.data.get("password") != request.data.get("password2"):
+            raise ValidationError(detail="Passwords don't match. Please enter both fields again.")
+
         serializer = UserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
