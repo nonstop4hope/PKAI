@@ -15,6 +15,7 @@ from pathlib import Path
 
 from celery.schedules import crontab
 from dotenv import load_dotenv
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,7 +31,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", False)
 DEBUG = os.getenv("DEBUG", False) == 'TRUE'
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(" ")
-CSRF_TRUSTED_ORIGINS = [f'https://{host}'for host in ALLOWED_HOSTS]
+CSRF_TRUSTED_ORIGINS = [f'https://{host}' for host in ALLOWED_HOSTS]
 
 # Application definition
 
@@ -66,8 +67,8 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = False
 
-CORS_ALLOWED_ORIGINS = [f'https://{host}'for host in ALLOWED_HOSTS]
-CORS_ALLOWED_ORIGINS += [f'http://{host}'for host in ALLOWED_HOSTS]
+CORS_ALLOWED_ORIGINS = [f'https://{host}' for host in ALLOWED_HOSTS]
+CORS_ALLOWED_ORIGINS += [f'http://{host}' for host in ALLOWED_HOSTS]
 
 CORS_ALLOW_HEADERS = [
     "accept",
@@ -102,7 +103,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'PKAI.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
@@ -116,7 +116,6 @@ DATABASES = {
         'PORT': os.getenv('POSTGRES_PORT'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -136,7 +135,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
@@ -147,7 +145,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = False
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
@@ -198,8 +195,7 @@ REST_FRAMEWORK = {
         ('rest_framework_simplejwt.authentication.JWTAuthentication',)
 }
 
-
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
-  }
+}

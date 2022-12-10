@@ -1,10 +1,9 @@
-import re
 from typing import NamedTuple, List
 
 import requests
 import user_agent
-from celery.utils.log import get_task_logger
 from bs4 import BeautifulSoup
+from celery.utils.log import get_task_logger
 
 from PKAI.settings import SOURCE_NEWS_URL
 from apps.site.news.models import News
@@ -75,8 +74,3 @@ class NewsCollector:
                 content = self.get_news_body_by_id(number)
                 news.body = self.parse_news_body(content)
                 news.save()
-
-
-
-
-

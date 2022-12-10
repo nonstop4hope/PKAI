@@ -14,6 +14,7 @@ class NewsCreateApi(generics.CreateAPIView):
 
 class NewsListApi(generics.ListAPIView):
     serializer_class = NewsSerializer
+
     # permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):

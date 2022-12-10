@@ -6,7 +6,6 @@ from ...search.serializers import AuthorSerializer, RelatedIdentifierSerializer
 
 
 class FavoriteRecordsHitSerializer(serializers.ModelSerializer):
-
     authors = AuthorSerializer(many=True)
     related_identifiers = RelatedIdentifierSerializer(many=True)
 
@@ -16,7 +15,6 @@ class FavoriteRecordsHitSerializer(serializers.ModelSerializer):
 
 
 class FavoriteRecordSerializer(serializers.ModelSerializer):
-
     record = FavoriteRecordsHitSerializer(many=False)
 
     class Meta:

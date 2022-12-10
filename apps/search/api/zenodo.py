@@ -3,7 +3,6 @@ from typing import List
 
 import requests
 from django.conf import settings
-from requests import Response
 
 from apps.search.api import celery_async_requests
 from apps.search.api.base_search import BaseSearch

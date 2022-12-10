@@ -39,7 +39,8 @@ class Tse:
         to_language = output_zh if output_zh and to_language in zh_pool else to_language
 
         if from_language != output_auto and from_language not in language_map:
-            raise TranslatorError('Unsupported from_language[{}] in {}.'.format(from_language, sorted(language_map.keys())))
+            raise TranslatorError(
+                'Unsupported from_language[{}] in {}.'.format(from_language, sorted(language_map.keys())))
         elif to_language not in language_map:
             raise TranslatorError('Unsupported to_language[{}] in {}.'.format(to_language, sorted(language_map.keys())))
         elif from_language != output_auto and to_language not in language_map[from_language]:
@@ -53,8 +54,10 @@ class Tse:
         if default_translator in ('Itranslate', 'Lingvanex'):
             from_lang = default_lang if from_lang == 'en' else from_lang
             to_lang = default_lang if to_lang == 'en' else to_lang
-            from_lang = default_lang.replace('-', '_') if default_translator == 'Lingvanex' and from_lang[:3] == 'en-' else from_lang
-            to_lang = default_lang.replace('-', '_') if default_translator == 'Lingvanex' and to_lang[:3] == 'en-' else to_lang
+            from_lang = default_lang.replace('-', '_') if default_translator == 'Lingvanex' and from_lang[
+                                                                                                :3] == 'en-' else from_lang
+            to_lang = default_lang.replace('-', '_') if default_translator == 'Lingvanex' and to_lang[
+                                                                                              :3] == 'en-' else to_lang
             # warnings.warn(f'Unsupported [language=en] with [{default_translator}]! Please specify it.')
             # warnings.warn(f'default languages: [{from_lang}, {to_lang}]')
         return from_lang, to_lang
@@ -65,7 +68,8 @@ class Tse:
         if not (to_language != 'auto' and from_language != to_language):
             raise TranslatorError("to_language != 'auto' and from_language != to_language")
         lang_list = [from_language, to_language]
-        return {}.fromkeys(lang_list, lang_list) if from_language != 'auto' else {from_language: to_language, to_language: to_language}
+        return {}.fromkeys(lang_list, lang_list) if from_language != 'auto' else {from_language: to_language,
+                                                                                  to_language: to_language}
 
     @staticmethod
     def check_query_text(query_text, if_ignore_limit_of_length=False, limit_of_length=5000):
@@ -77,7 +81,8 @@ class Tse:
             raise TranslatorError('The length of the text to be translated exceeds the limit.')
         else:
             if length >= limit_of_length:
-                logger.warning(f'The translation ignored the excess[above {limit_of_length}]. Length of `query_text` is {length}.')
+                logger.warning(
+                    f'The translation ignored the excess[above {limit_of_length}]. Length of `query_text` is {length}.')
                 logger.warning('The translation result will be incomplete.')
                 return query_text[:limit_of_length - 1]
         return query_text

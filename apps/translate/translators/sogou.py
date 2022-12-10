@@ -1,6 +1,6 @@
 import hashlib
-import re
 import random
+import re
 from typing import Union
 
 import execjs
@@ -51,7 +51,8 @@ class Sogou(Tse):
         return form
 
     # @Tse.time_stat
-    def sogou_api(self, query_text: str, from_language: str = 'auto', to_language: str = 'en', **kwargs) -> Union[str, dict]:
+    def sogou_api(self, query_text: str, from_language: str = 'auto', to_language: str = 'en', **kwargs) -> Union[
+        str, dict]:
         """
         https://fanyi.sogou.com
         :param query_text: str, must.
@@ -81,7 +82,8 @@ class Sogou(Tse):
             if not self.language_map:
                 self.language_map = self.get_language_map(ss, self.get_language_url, timeout, proxies)
 
-            from_language, to_language = self.check_language(from_language, to_language, self.language_map, output_zh=self.output_zh)
+            from_language, to_language = self.check_language(from_language, to_language, self.language_map,
+                                                             output_zh=self.output_zh)
             self.form_data = self.get_form(query_text, from_language, to_language)
             r = ss.post(self.api_url, headers=self.api_headers, data=self.form_data, timeout=timeout, proxies=proxies)
             r.raise_for_status()

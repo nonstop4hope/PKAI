@@ -72,4 +72,3 @@ class CoreAPI:
             api_result.message = json_data['message']
 
         return api_result
-

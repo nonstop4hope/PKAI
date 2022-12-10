@@ -1,5 +1,6 @@
 import os
-from celery import Celery, shared_task
+
+from celery import Celery
 from celery.schedules import crontab
 from celery.utils.log import get_task_logger
 
@@ -25,4 +26,3 @@ app.conf.beat_schedule = {
         'schedule': crontab(minute='*/10')
     },
 }
-

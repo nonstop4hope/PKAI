@@ -22,7 +22,6 @@ class RelatedIdentifierSerializer(serializers.ModelSerializer):
 
 
 class GeneralizedHitsSearchSerializer(serializers.ModelSerializer):
-
     authors = AuthorSerializer(many=True)
     related_identifiers = RelatedIdentifierSerializer(many=True)
 
@@ -34,7 +33,6 @@ class GeneralizedHitsSearchSerializer(serializers.ModelSerializer):
 
 
 class OneHitSerializer(serializers.ModelSerializer):
-
     authors = AuthorSerializer(many=True)
     files = FileSerializer(many=True)
     related_identifiers = RelatedIdentifierSerializer(many=True)

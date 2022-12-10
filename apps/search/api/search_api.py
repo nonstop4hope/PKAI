@@ -24,5 +24,3 @@ class SearchAPI(Core, Zenodo):
 
         response.total_records = len(response.hits)
         return response
-
-

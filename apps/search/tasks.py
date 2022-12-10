@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import Dict
 
 from celery import shared_task
@@ -38,4 +38,4 @@ def get_core_records_async(search_query: str, page: int) -> Dict:
 
 @shared_task
 def remove_old_hits() -> None:
-    logger.info(GeneralizedHitsSearch.objects.filter(creation_date__lte=Now()-timedelta(hours=2)).delete())
+    logger.info(GeneralizedHitsSearch.objects.filter(creation_date__lte=Now() - timedelta(hours=2)).delete())

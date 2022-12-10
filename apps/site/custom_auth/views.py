@@ -54,13 +54,12 @@
 #         return HttpResponse(status=200)
 #
 #     return HttpResponse(status=401)
-from http.client import HTTPException
 
-from django.shortcuts import render
 from rest_framework.exceptions import ValidationError
-from rest_framework.views import APIView
-from .serializers import UserSerializer
 from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from .serializers import UserSerializer
 
 
 # view for registering users

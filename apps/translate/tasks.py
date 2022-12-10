@@ -1,7 +1,6 @@
 from celery import shared_task
 from celery.utils.log import get_task_logger
 
-from apps.translate.models import Translation
 from apps.translate.translators.translators_server import TranslatorsServer
 
 logger = get_task_logger(__name__)

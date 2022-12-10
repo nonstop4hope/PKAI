@@ -27,7 +27,7 @@ class Core(BaseSearch):
                 'offset': 0,
                 'limit': records_per_query}
         async_tasks.append(celery_async_requests.post.delay(url='https://api.core.ac.uk/v3/search/works',
-                                                                headers=self.headers, body=body))
+                                                            headers=self.headers, body=body))
 
         return async_tasks
 

@@ -13,7 +13,6 @@ logger = logging.getLogger('__name__')
 
 
 class AddRecordToFavorites(generics.CreateAPIView):
-
     serializer_class = FavoriteRecordSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
@@ -31,7 +30,6 @@ class AddRecordToFavorites(generics.CreateAPIView):
 
 
 class ListFavoriteRecords(generics.ListAPIView):
-
     serializer_class = FavoriteRecordSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
@@ -41,13 +39,9 @@ class ListFavoriteRecords(generics.ListAPIView):
 
 
 class DeleteFavoriteRecord(generics.DestroyAPIView):
-
     serializer_class = FavoriteRecordSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
         user = self.request.user.id
         return FavoriteRecord.objects.filter(user=user)
-
-
-

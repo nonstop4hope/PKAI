@@ -1,9 +1,11 @@
-from rest_framework.test import force_authenticate
-from rest_framework.test import APIRequestFactory
-from django.contrib.auth.models import User
-from .views import get_celery_result_by_id, get_core_records, get_zenodo_records
 import json
+
+from django.contrib.auth.models import User
 from django.test import TestCase
+from rest_framework.test import APIRequestFactory
+from rest_framework.test import force_authenticate
+
+from .views import get_celery_result_by_id, get_core_records, get_zenodo_records
 
 
 class CoreTest(TestCase):

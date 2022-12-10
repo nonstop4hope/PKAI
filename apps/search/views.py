@@ -1,12 +1,10 @@
 import logging
-from datetime import datetime
 from http import HTTPStatus
 
 from django.http import JsonResponse, HttpResponse
 from rest_framework import generics, permissions, mixins
 from rest_framework.response import Response
 
-from .api import zenodo_citations
 from .api.opencitations_api import OpencitationsAPI
 from .api.search_api import SearchAPI
 from .celery_result import get_task_state_by_id
@@ -59,7 +57,7 @@ def get_generalized_results(request):
 
 class GeneralizedSearch(generics.ListAPIView):
     serializer_class = GeneralizedHitsSearchSerializer
-    permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
         query = self.request.query_params['query']
@@ -79,7 +77,7 @@ class GeneralizedSearch(generics.ListAPIView):
 
 class OneHit(mixins.RetrieveModelMixin, generics.GenericAPIView):
     serializer_class = OneHitSerializer
-    permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = (permissions.IsAuthenticated,)
 
     def retrieve(self, request, *args, **kwargs):
         source_id = self.request.query_params['id']

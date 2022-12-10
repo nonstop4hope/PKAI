@@ -1,7 +1,6 @@
 import logging
 
 from django.http import JsonResponse
-from django.views import View
 from rest_framework import permissions
 from rest_framework.views import APIView
 
@@ -11,7 +10,6 @@ logger = logging.getLogger(__name__)
 
 
 class Translate(APIView):
-
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
@@ -21,4 +19,3 @@ class Translate(APIView):
             to_language = 'ru'
         translation = get_translation(source_text, to_language)
         return JsonResponse(translation.dict())
-
