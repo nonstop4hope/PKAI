@@ -18,7 +18,7 @@ class AddRecordToFavorites(generics.CreateAPIView):
 
     def post(self, request, *args, **kwargs):
         user = request.user.id
-        record_id = request.POST.get('id')
+        record_id = request.data.get('id')
         try:
             record = GeneralizedHitsSearch.objects.get(pk=record_id)
         except apps.search.models.GeneralizedHitsSearch.DoesNotExist:
