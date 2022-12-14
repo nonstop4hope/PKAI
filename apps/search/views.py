@@ -49,7 +49,7 @@ def get_generalized_results(request):
     if request.user.is_authenticated:
         search_query = request.GET.get('query')
         search = SearchAPI()
-        response = search.get_records_by_query_async(search_query=search_query)
+        response = search.get_records_by_query_async(search_query=search_query, user=request.user.id)
         return JsonResponse(response.dict(), safe=False)
     else:
         return JsonResponse({"detail": "Authentication credentials were not provided."}, status=HTTPStatus.FORBIDDEN)
@@ -71,7 +71,8 @@ class GeneralizedSearch(generics.ListAPIView):
                 sort = self.request.query_params['sort']
             else:
                 sort = None
-            search.get_records_by_query_async(search_query=self.request.query_params['query'], sort=sort)
+            search.get_records_by_query_async(search_query=self.request.query_params['query'], sort=sort, user=request.user.id)
+
         return self.list(request, *args, **kwargs)
 
 
@@ -89,10 +90,10 @@ class OneHit(mixins.RetrieveModelMixin, generics.GenericAPIView):
         except GeneralizedHitsSearch.DoesNotExist:
             search = SearchAPI()
             if source == 'zenodo':
-                search.get_single_zenodo_hit(source_id)
+                search.get_single_zenodo_hit(source_id, user=request.user.id)
                 instance = GeneralizedHitsSearch.objects.get(source_id=source_id, source=source)
             else:
-                search.get_single_core_hit(source_id)
+                search.get_single_core_hit(source_id, user=request.user.id)
                 instance = GeneralizedHitsSearch.objects.get(source_id=source_id, source=source)
             instance.citations_number = opencitations.get_opencitation_statistic(instance.doi)
 

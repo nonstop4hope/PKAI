@@ -29,7 +29,7 @@ class GeneralizedHitsSearchSerializer(serializers.ModelSerializer):
         model = GeneralizedHitsSearch
         fields = ('id', 'source', 'source_id', 'title', 'description', 'doi', 'type', 'language', 'publication_date',
                   'original_url', 'access_right', 'citations_number', 'source_keywords', 'authors',
-                  'related_identifiers')
+                  'related_identifiers', 'favourite')
 
 
 class OneHitSerializer(serializers.ModelSerializer):

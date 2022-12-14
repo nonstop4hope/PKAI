@@ -97,6 +97,7 @@ class RelatedIdentifier(models.Model):
 
 
 class GeneralizedHitsSearch(models.Model):
+    user = models.IntegerField(blank=False)
     query = models.TextField(default=None)
     source = models.CharField(max_length=255)
     source_id = models.BigIntegerField()
@@ -115,6 +116,7 @@ class GeneralizedHitsSearch(models.Model):
     authors = models.ManyToManyField(HitAuthor, related_name='hits_list', blank=True)
     files = models.ManyToManyField(File, related_name='files_list', blank=True)
     related_identifiers = models.ManyToManyField(RelatedIdentifier, related_name='related_identifiers_list', blank=True)
+    favourite = models.BooleanField(default=False)
 
 
 class DownloadedFile(BaseModel):

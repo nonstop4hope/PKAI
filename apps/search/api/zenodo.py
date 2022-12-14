@@ -41,11 +41,15 @@ class Zenodo(BaseSearch):
         else:
             raise RecordIsNotExists
 
-    def _parse_one_zenodo_hit(self, hit_json, query: str = '') -> GeneralizedHitsSearch:  # TODO: set input type
+    def _parse_one_zenodo_hit(self, user: int, hit_json, query: str = '') -> GeneralizedHitsSearch:  # TODO: set input type
         """ parse one json to generalized model """
         hit = GeneralizedHitsSearch()
+        hit.user = user
         hit.query = query
         hit.source = 'zenodo'
+
+        # hit.favourite = self.record_is_favourite(user, 'zenodo', int(hit_json['id']))
+
         hit.source_id = hit_json['id']
         hit.title = hit_json['metadata']['title']
 
@@ -110,10 +114,10 @@ class Zenodo(BaseSearch):
 
         return hit
 
-    def _get_zenodo_hits(self, api_response, query: str) -> List[GeneralizedHitsSearch]:
+    def _get_zenodo_hits(self, api_response, query: str, user: int) -> List[GeneralizedHitsSearch]:
         if 'hits' not in api_response.keys():
             raise TooManyRequests
-        return [self._parse_one_zenodo_hit(zenodo_hit, query=query) for zenodo_hit in api_response['hits']['hits']]
+        return [self._parse_one_zenodo_hit(user=user, hit_json=zenodo_hit, query=query) for zenodo_hit in api_response['hits']['hits']]
 
-    def get_single_zenodo_hit(self, hit_id) -> GeneralizedHitsSearch:
-        return self._parse_one_zenodo_hit(self._request_to_single_zenodo_hit(hit_id))
+    def get_single_zenodo_hit(self, hit_id, user: int) -> GeneralizedHitsSearch:
+        return self._parse_one_zenodo_hit(user=user, hit_json=self._request_to_single_zenodo_hit(hit_id))

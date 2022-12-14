@@ -8,6 +8,7 @@ from apps.search.api import celery_async_requests
 from apps.search.api.base_search import BaseSearch
 from apps.search.exceptions import TooManyRequests, RecordIsNotExists
 from apps.search.models import GeneralizedHitsSearch, HitAuthor, File, RelatedIdentifier
+from apps.site.favorite_records.models import FavoriteRecord
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -38,9 +39,13 @@ class Core(BaseSearch):
         else:
             raise RecordIsNotExists
 
-    def _parse_one_core_hit(self, hit_json, query: str = '') -> GeneralizedHitsSearch:  # TODO: access_right
+    def _parse_one_core_hit(self, user: int, hit_json, query: str = '') -> GeneralizedHitsSearch:  # TODO: access_right
 
         hit = GeneralizedHitsSearch()
+        hit.user = user
+
+        # hit.favourite = self.record_is_favourite(user, 'core', int(hit_json['id']))
+
         hit.query = query
         hit.source = 'core'
         hit.title = hit_json['title']
@@ -101,10 +106,10 @@ class Core(BaseSearch):
 
         return hit
 
-    def _get_core_hits(self, api_response: dict, query: str) -> List[GeneralizedHitsSearch]:
+    def _get_core_hits(self, api_response: dict, query: str, user: int) -> List[GeneralizedHitsSearch]:
         if 'results' not in api_response.keys():
             raise TooManyRequests
-        return [self._parse_one_core_hit(core_hit, query=query) for core_hit in api_response['results']]
+        return [self._parse_one_core_hit(hit_json=core_hit, query=query, user=user) for core_hit in api_response['results']]
 
-    def get_single_core_hit(self, hit_id) -> GeneralizedHitsSearch:
-        return self._parse_one_core_hit(self._request_to_single_core_hit(hit_id))
+    def get_single_core_hit(self, hit_id, user: int) -> GeneralizedHitsSearch:
+        return self._parse_one_core_hit(hit_json=self._request_to_single_core_hit(hit_id), user=user)
