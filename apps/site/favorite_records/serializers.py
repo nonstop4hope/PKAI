@@ -11,7 +11,9 @@ class FavoriteRecordsHitSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GeneralizedHitsSearch
-        fields = ('id', 'title', 'doi', 'type', 'language', 'publication_date', 'authors', 'related_identifiers')
+        fields = ('id', 'source', 'source_id', 'title', 'description', 'doi', 'type', 'language', 'publication_date',
+                  'original_url', 'access_right', 'citations_number', 'source_keywords', 'authors',
+                  'related_identifiers', 'favourite')
 
 
 class FavoriteRecordSerializer(serializers.ModelSerializer):
