@@ -8,6 +8,7 @@ from apps.search.exceptions import RecordIsNotExists
 from apps.search.models import GeneralizedHitsSearch
 from apps.site.favorite_records.models import FavoriteRecord
 from apps.site.favorite_records.serializers import FavoriteRecordSerializer
+from apps.search.serializers import GeneralizedHitsSearchSerializer
 
 logger = logging.getLogger('__name__')
 
@@ -32,24 +33,20 @@ class AddRecordToFavorites(generics.CreateAPIView):
 
 
 class ListFavoriteRecords(generics.ListAPIView):
-    serializer_class = FavoriteRecordSerializer
+    serializer_class = GeneralizedHitsSearchSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
-        user = self.request.user.id
-        return FavoriteRecord.objects.filter(user=user)
+        user = self.request.user
+        return [favorite.record for favorite in FavoriteRecord.objects.filter(user=user)]
 
 
 class DeleteFavoriteRecord(generics.DestroyAPIView):
     serializer_class = FavoriteRecordSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
-    def get_queryset(self):
-        user = self.request.user.id
-        return FavoriteRecord.objects.filter(user=user)
-
     def delete(self, request, *args, **kwargs):
-        user = request.user.id
+        user = request.user
         record_id = request.data.get('id')
 
         try:
