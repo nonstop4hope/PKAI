@@ -17,7 +17,7 @@ class AddRecordToFavorites(generics.CreateAPIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
-        user = request.user.id
+        user = request.user
         record_id = request.data.get('id')
         try:
             record = GeneralizedHitsSearch.objects.get(pk=record_id)
@@ -25,10 +25,6 @@ class AddRecordToFavorites(generics.CreateAPIView):
             raise RecordIsNotExists
 
         favorite, created = FavoriteRecord.objects.get_or_create(user=user, record=record)
-
-        if created:
-            record.favourite = True
-            record.save()
 
         return JsonResponse({
             'created': created,
@@ -56,20 +52,11 @@ class DeleteFavoriteRecord(generics.DestroyAPIView):
         user = request.user.id
         record_id = request.data.get('id')
 
-        records = FavoriteRecord.objects.filter(user=user)
-        all_ids = [record.record.id for record in records]
-
-        if record_id not in all_ids:
+        try:
+            record = FavoriteRecord.objects.get(user=user, record_id=record_id)
+            record.delete()
+        except FavoriteRecord.DoesNotExist:
             raise RecordIsNotExists
-
-        for record in records:
-            if record.record.id == record_id:
-                record.delete()
-                break
-
-        record = GeneralizedHitsSearch.objects.get(pk=record_id)
-        record.favourite = False
-        record.save()
 
         return JsonResponse({
             'deleted': True,

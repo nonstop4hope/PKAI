@@ -1,77 +1,52 @@
 import logging
-from http import HTTPStatus
+from datetime import datetime, timedelta
 
-from django.http import JsonResponse, HttpResponse
+from django.http import HttpResponse
+from elasticsearch_dsl import Q
 from rest_framework import generics, permissions, mixins
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 
 from .api.opencitations_api import OpencitationsAPI
 from .api.search_api import SearchAPI
-from .celery_result import get_task_state_by_id
+from .documents import HitDocument
 from .file_downloader import get_file_from_url
 from .models import GeneralizedHitsSearch
+from .models import QueryHit
 from .serializers import GeneralizedHitsSearchSerializer, OneHitSerializer
-from .tasks import get_core_records_async
-from .tasks import get_zenodo_records_async
 
 logger = logging.getLogger('__name__')
-
-
-def get_zenodo_records(request):
-    if request.user.is_authenticated:
-        search_query = request.GET.get('query')
-        page = int(request.GET.get('page', 1))
-        return JsonResponse({'task_id': str(get_zenodo_records_async.delay(search_query, page))})
-    else:
-        return JsonResponse({"detail": "Authentication credentials were not provided."}, status=HTTPStatus.FORBIDDEN)
-
-
-def get_core_records(request):
-    if request.user.is_authenticated:
-        search_query = request.GET.get('query')
-        page = int(request.GET.get('page', 1))
-        core_records = str(get_core_records_async.delay(search_query, page))
-        return JsonResponse({'task_id': core_records})
-    else:
-        return JsonResponse({"detail": "Authentication credentials were not provided."}, status=HTTPStatus.FORBIDDEN)
-
-
-def get_celery_result_by_id(request):
-    if request.user.is_authenticated:
-        task_id = request.GET.get('task_id')
-        response = get_task_state_by_id(task_id)
-        return JsonResponse(response)
-    else:
-        return JsonResponse({"detail": "Authentication credentials were not provided."}, status=HTTPStatus.FORBIDDEN)
-
-
-def get_generalized_results(request):
-    if request.user.is_authenticated:
-        search_query = request.GET.get('query')
-        search = SearchAPI()
-        response = search.get_records_by_query_async(search_query=search_query, user=request.user.id)
-        return JsonResponse(response.dict(), safe=False)
-    else:
-        return JsonResponse({"detail": "Authentication credentials were not provided."}, status=HTTPStatus.FORBIDDEN)
 
 
 class GeneralizedSearch(generics.ListAPIView):
     serializer_class = GeneralizedHitsSearchSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    document_class = HitDocument
 
     def get_queryset(self):
         query = self.request.query_params['query']
-        return GeneralizedHitsSearch.objects.filter(query=query)
+
+        q = Q(
+            'multi_match',
+            query=query,
+            fuzziness='auto')
+
+        search = self.document_class.search().query(q).extra(size=100)
+        response = search.execute()
+        return response
 
     def get(self, request, *args, **kwargs):
         query = self.request.query_params['query']
-        if len(GeneralizedHitsSearch.objects.filter(query=query)) == 0:
+        query_hit, query_was_create = QueryHit.objects.get_or_create(query=query)
+        yesterday = datetime.now() - timedelta(days=1)
+
+        # if query_was_create or query_hit.creation_date < yesterday:
+        if True:
             search = SearchAPI()
-            if 'sort' in self.request.query_params:
-                sort = self.request.query_params['sort']
-            else:
-                sort = None
-            search.get_records_by_query_async(search_query=self.request.query_params['query'], sort=sort, user=request.user.id)
+            sort = self.request.query_params.get('sort')
+            search.get_records_by_query_async(search_query=query, sort=sort)
+            query_hit.creation_date = yesterday
+            query_hit.save()
 
         return self.list(request, *args, **kwargs)
 
@@ -90,10 +65,10 @@ class OneHit(mixins.RetrieveModelMixin, generics.GenericAPIView):
         except GeneralizedHitsSearch.DoesNotExist:
             search = SearchAPI()
             if source == 'zenodo':
-                search.get_single_zenodo_hit(source_id, user=request.user.id)
+                search.get_single_zenodo_hit(source_id)
                 instance = GeneralizedHitsSearch.objects.get(source_id=source_id, source=source)
             else:
-                search.get_single_core_hit(source_id, user=request.user.id)
+                search.get_single_core_hit(source_id)
                 instance = GeneralizedHitsSearch.objects.get(source_id=source_id, source=source)
             instance.citations_number = opencitations.get_opencitation_statistic(instance.doi)
 

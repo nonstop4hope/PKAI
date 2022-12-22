@@ -56,14 +56,6 @@ class GeneralizedHit(BaseModel):
     citations: List[CitationHit] = []
 
 
-# class File(BaseModel):
-#     checksum: str = ''
-#     key: str = ''
-#     link: str = ''
-#     size: int = 0
-#     type: str = ''
-
-
 class ApiResponse(BaseModel):
     hits: List[GeneralizedHit] = []
     total_records: int = 0
@@ -82,23 +74,12 @@ class HitAuthor(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True)
 
 
-class File(models.Model):
-    checksum = models.CharField(max_length=512, blank=True, null=True)
-    key = models.CharField(max_length=255, blank=True, null=True)
-    link = models.CharField(max_length=1024, blank=True, null=True)
-    size = models.BigIntegerField(default=0)
-    type = models.CharField(max_length=255)
-    creation_date = models.DateTimeField(auto_now_add=True)
-
-
 class RelatedIdentifier(models.Model):
     scheme = models.CharField(max_length=255)
     identifier = models.CharField(max_length=255)
 
 
 class GeneralizedHitsSearch(models.Model):
-    user = models.IntegerField(blank=False)
-    query = models.TextField(default=None)
     source = models.CharField(max_length=255)
     source_id = models.BigIntegerField()
     title = models.TextField()
@@ -114,9 +95,22 @@ class GeneralizedHitsSearch(models.Model):
     citations_number = models.IntegerField(default=0)
     creation_date = models.DateTimeField(auto_now_add=True)
     authors = models.ManyToManyField(HitAuthor, related_name='hits_list', blank=True)
-    files = models.ManyToManyField(File, related_name='files_list', blank=True)
     related_identifiers = models.ManyToManyField(RelatedIdentifier, related_name='related_identifiers_list', blank=True)
-    favourite = models.BooleanField(default=False)
+
+
+class File(models.Model):
+    hit = models.ForeignKey(GeneralizedHitsSearch, related_name='files', on_delete=models.CASCADE)
+    checksum = models.CharField(max_length=512, blank=True, null=True)
+    key = models.CharField(max_length=255, blank=True, null=True)
+    link = models.CharField(max_length=1024, blank=True, null=True)
+    size = models.BigIntegerField(default=0)
+    type = models.CharField(max_length=255)
+    creation_date = models.DateTimeField(auto_now_add=True)
+
+
+class QueryHit(models.Model):
+    query = models.CharField(max_length=255)
+    creation_date = models.DateTimeField(auto_now_add=True)
 
 
 class DownloadedFile(BaseModel):

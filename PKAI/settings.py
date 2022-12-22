@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_elasticsearch_dsl',
     'rest_framework',
     'rest_framework_simplejwt',
     'apps.search',
@@ -192,10 +193,20 @@ AUTH_USER_MODEL = 'custom_auth.UserData'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES':
-        ('rest_framework_simplejwt.authentication.JWTAuthentication',)
+        ('rest_framework_simplejwt.authentication.JWTAuthentication',),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 100
 }
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
+}
+
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': os.getenv('ELASTIC_HOST'),
+        'http_auth': (os.getenv('ELASTIC_USER'), os.getenv('ELASTIC_PASSWORD')),
+        'verify_certs': False,
+    },
 }
