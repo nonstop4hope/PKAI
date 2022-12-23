@@ -1,7 +1,7 @@
 FROM ubuntu:20.04
 
 RUN apt-get update -yq \
-    && apt-get install curl gnupg python3 -yq \
+    && apt-get install curl gnupg python3.9 python3-pip -yq \
     && curl -sL https://deb.nodesource.com/setup_16.x | bash \
     && apt-get install nodejs -yq
 
