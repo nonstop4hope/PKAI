@@ -1,4 +1,4 @@
-FROM python3.9-nodejs16-slim
+FROM nikolaik/python-nodejs:python3.9-nodejs16-slim
 
 WORKDIR /usr/src/app
 
