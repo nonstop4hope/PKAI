@@ -1,4 +1,9 @@
-FROM python:3.9.7
+FROM ubuntu:20.04
+
+RUN apt-get update -yq \
+    && apt-get install curl gnupg python3 -yq \
+    && curl -sL https://deb.nodesource.com/setup_8.x | bash \
+    && apt-get install nodejs -yq
 
 WORKDIR /usr/src/app
 
