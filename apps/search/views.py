@@ -37,15 +37,21 @@ class GeneralizedSearch(generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
         query = self.request.query_params['query']
-        query_hit, query_was_create = QueryHit.objects.get_or_create(query=query)
+        try:
+            query_hit = QueryHit.objects.get(query=query)
+        except QueryHit.DoesNotExist:
+            query_hit = None
         yesterday = datetime.now() - timedelta(days=1)
 
-        if query_was_create or query_hit.creation_date < yesterday:
+        if query_hit is None or query_hit.creation_date < yesterday:
             search = SearchAPI()
             sort = self.request.query_params.get('sort')
             search.get_records_by_query_async(search_query=query, sort=sort)
-            query_hit.creation_date = datetime.now()
-            query_hit.save()
+            if query_hit is None:
+                QueryHit.objects.create(query=query)
+            else:
+                query_hit.creation_date = datetime.now()
+                query_hit.save()
 
         return self.list(request, *args, **kwargs)
 
