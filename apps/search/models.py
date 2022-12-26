@@ -101,7 +101,7 @@ class GeneralizedHitsSearch(models.Model):
 class File(models.Model):
     hit = models.ForeignKey(GeneralizedHitsSearch, related_name='files', on_delete=models.CASCADE)
     checksum = models.CharField(max_length=512, blank=True, null=True)
-    key = models.CharField(max_length=255, blank=True, null=True)
+    key = models.CharField(max_length=1024, blank=True, null=True)
     link = models.CharField(max_length=1024, blank=True, null=True)
     size = models.BigIntegerField(default=0)
     type = models.CharField(max_length=255)
