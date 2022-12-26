@@ -78,8 +78,11 @@ class Zenodo(BaseSearch):
             hit.related_identifiers.add(identifier)
 
         for hit_author in metadata['creators']:
-            author, _ = HitAuthor.objects.get_or_create(affiliation=hit_author.get('affiliation'),
-                                                        name=hit_author['name'])
+            affiliation = hit_author.get('affiliation')
+            author, _ = HitAuthor.objects.get_or_create(name=hit_author['name'])
+            if affiliation is not None and author.affiliation is None:
+                author.affiliation = affiliation
+                author.save()
             hit.authors.add(author)
 
         for hit_file in hit_json.get('files', []):

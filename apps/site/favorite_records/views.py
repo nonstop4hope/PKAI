@@ -22,7 +22,7 @@ class AddRecordToFavorites(generics.CreateAPIView):
         record_id = request.data.get('id')
         try:
             record = GeneralizedHitsSearch.objects.get(pk=record_id)
-        except apps.search.models.GeneralizedHitsSearch.DoesNotExist:
+        except GeneralizedHitsSearch.DoesNotExist:
             raise RecordIsNotExists
 
         favorite, created = FavoriteRecord.objects.get_or_create(user=user, record=record)

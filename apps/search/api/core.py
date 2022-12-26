@@ -19,6 +19,7 @@ class Core(BaseSearch):
         super().__init__()
         self.access_token = settings.CORE_ACCESS_TOKEN
         self.size = 50
+        self.source = 'core'
         self.headers = {'Authorization': f'Bearer {self.access_token}'}
 
     def _get_core_async_tasks(self, query: str, records_per_query: int = 50):
@@ -40,7 +41,7 @@ class Core(BaseSearch):
 
     def _parse_one_core_hit(self, hit_json) -> GeneralizedHitsSearch:
 
-        source = 'core'
+        source = self.source
         source_id = hit_json['id']
 
         try:
