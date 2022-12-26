@@ -38,7 +38,9 @@ class ListFavoriteRecords(generics.ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return [favorite.record for favorite in FavoriteRecord.objects.filter(user=user)]
+        queryset = [favorite.record for favorite in FavoriteRecord.objects.filter(user=user)]
+        queryset.reverse()
+        return queryset
 
 
 class DeleteFavoriteRecord(generics.DestroyAPIView):
